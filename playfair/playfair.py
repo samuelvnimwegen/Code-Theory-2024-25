@@ -1,9 +1,11 @@
-from utils import preconditions
+from playfair_matrix import PlayfairMatrix
+from utils import preconditions, playfair_methods
 
 
 class Playfair:
     def __init__(self, keyword: str):
         self.keyword = keyword
+        self.matrix_obj = PlayfairMatrix(keyword)
 
     def encrypt(self, plaintext: str) -> str:
         """
@@ -15,7 +17,15 @@ class Playfair:
         assert preconditions.text_no_j(plaintext)
         assert preconditions.no_spaces_in_text(plaintext)
 
-        ciphertext = plaintext
+        # First add X values to split text into correct digrams/duo's
+        splitted_text = playfair_methods.split_text_in_correct_pairs(plaintext)
+
+
+
+
+
+
+        ciphertext = splitted_text
 
         assert preconditions.text_only_alphabet(ciphertext)
         assert preconditions.text_no_j(ciphertext)
