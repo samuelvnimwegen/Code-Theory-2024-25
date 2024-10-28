@@ -113,7 +113,7 @@ def find_three_letter_patterns(text) -> dict:
 
 if __name__ == "__main__":
     # For all the possible key lengths, get all the possible output texts
-    stack = TopNStack(10000)
+    stack = TopNStack(1000)
     for key_length in range(2, 11):
         print(key_length, ": ")
         columns = get_columns(code, key_length)
@@ -124,8 +124,12 @@ if __name__ == "__main__":
             text: str = columns_to_text(permuted_columns)
             three_letter_patterns: dict = find_three_letter_patterns(text)
             total_duplicates: int = sum(three_letter_patterns.values())
-            item = tuple([key_length, text])
-            stack.push(item, total_duplicates)
+            item = {
+                "key_length": key_length,
+                "text": text,
+                "three_letter_patterns": three_letter_patterns
+            }
+            stack.push(json.dumps(item), total_duplicates)
 
             # Update the progress bar every 0.1% of the total permutations
             if i % 10000 == 0:
@@ -135,5 +139,5 @@ if __name__ == "__main__":
     results = stack.get_top_n()
     # write the data to a file
     with open("output.txt", "w") as file:
-        file.write(json.dumps(stack.get_top_n()))
+        file.write(json.dumps(results))
     print("Done")
