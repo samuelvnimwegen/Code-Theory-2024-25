@@ -1,4 +1,6 @@
-from util.most_common_words import LANGUAGES
+"""
+The frequency tables of letters in different languages.
+"""
 
 ENGLISH = {
     "E": 12.702,
@@ -118,7 +120,6 @@ DUTCH = {
     "Y": 0.04,
     "Q": 0.01
 }
-
 
 SPANISH = {
     "E": 13.72,
@@ -290,9 +291,7 @@ POLISH = {
     "Ł": 1.82,
     "B": 1.47,
     "G": 1.42,
-    "Ę": 1.11,
     "H": 1.08,
-    "Ę": 0.99,
     "Ó": 0.98,
     "Ś": 0.66,
     "Ć": 0.40,
@@ -304,6 +303,3 @@ POLISH = {
     "V": 0.04,
     "X": 0.02,
 }
-
-
-ALL_LANGUAGE_FREQUENCIES = [ENGLISH, FRENCH, GERMAN, DUTCH]

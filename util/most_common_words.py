@@ -1,5 +1,6 @@
 """
-This file contains the most common three-letter words in the Dutch, English, French and German languages.
+This file contains the most common three-letter words in the
+Dutch, English, French and German languages.
 """
 DUTCH = ["HET", "EEN", "NIET", "DAT", "WAT"]
 ENGLISH = ["THE", "AND", "WAS", "FOR", "ARE"]

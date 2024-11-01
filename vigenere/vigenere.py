@@ -2,12 +2,9 @@
 This file is made to decypher a vigenere cipher
 """
 
-import json
-from util.progress_bar import print_progress_bar
 from collections import Counter
-from vigenere.transposition import find_three_letter_patterns, TopNStack
-from util.letter_frequency_table import ENGLISH, DUTCH, ALL_LANGUAGE_FREQUENCIES, GERMAN, FRENCH, SPANISH, ITALIAN, \
-    PORTUGUESE, TURKISH, SWEDISH, POLISH
+from vigenere.transposition import find_three_letter_patterns
+from util.letter_frequency_table import ENGLISH, DUTCH, GERMAN, FRENCH, SPANISH, ITALIAN
 
 
 def get_indices(text: str, segment: str):
@@ -29,15 +26,15 @@ def get_index_spacing(text: str, segments: list[str]) -> list[int]:
     """
     Get the index spacing of segments in a text.
     :param text: The text
-    :param segments: the segments
+    :param segments: The segments
     :return: The list with total spacings
     """
     total_spacings = []
     for segment in segments:
         indices = get_indices(text, segment)
-        for i in range(len(indices)):
-            for j in range(i + 1, len(indices)):
-                total_spacings.append(indices[j] - indices[i])
+        for i, start_index in enumerate(indices):
+            for end_index in indices[i + 1:]:
+                total_spacings.append(end_index - start_index)
     return sorted(total_spacings)
 
 
@@ -56,60 +53,6 @@ def check_dividers(spacings: list[int], max_key_len: int = 10) -> dict[int, int]
             if spacing % i == 0:
                 dividers[i] += 1
     return dividers
-
-
-def get_sequence_frequencies(input_file: str, output_file: str):
-    # TODO: Write tests for this function
-    """
-    Get the frequencies of the dividers of the spacings
-
-    :param input_file: The input file
-    :param output_file: The output file
-    """
-    with open(input_file, "r") as file:
-        data = json.load(file)
-
-    frequencies = []
-    i = 0
-    length = len(data)
-    for item in data:
-        index = item[0]
-        data = json.loads(item[1])
-        keys = list(data["three_letter_patterns"].keys())
-        spacings = get_index_spacing(segments=keys, text=data["text"])
-        dividers = check_dividers(spacings)
-        frequencies.append(dividers)
-        i += 1
-        if i % 100 == 0:
-            print_progress_bar(i, length)
-
-    with open(output_file, "w") as file:
-        file.write(json.dumps(frequencies))
-
-
-def print_frequencies() -> None:
-    """
-    Print the frequencies of the dividers
-    :return: None
-    """
-    # TODO: Write tests for this function
-    with open("vigenere/three-part-segments/distances_table.txt", "r") as file:
-        data = json.load(file)
-
-    maxes: dict = {}
-    for freq_index in range(len(data)):
-        frequency_dict = data[freq_index]
-        for i in range(2, 11):
-            if i not in maxes.keys() or frequency_dict[str(i)] > maxes[i]["frequencies"][str(i)]:
-                maxes[i] = {
-                    "frequencies": frequency_dict,
-                    "frequency_index": freq_index
-                }
-
-    for max_key in maxes.keys():
-        occurrences = maxes[max_key]["frequencies"][str(max_key)]
-
-        print(f"{max_key}:", round(occurrences / 305 * 100, 2), "%, index:", maxes[max_key]["frequency_index"])
 
 
 def most_used_letter(text: str) -> tuple[str, int]:
@@ -131,7 +74,8 @@ def alphabet_difference(char1: str, char2: str) -> str:
     Calculate the difference between two letters in the alphabet
     :param char1: Character 1
     :param char2: Character 2
-    :return: The character difference, for example, 'B' and 'F' would return 'E' because 'B' + 'E' = 'F'
+    :return: The character difference, for example, 'B' and 'F' would return 'E' because
+    'B' + 'E' = 'F'
     """
     # Convert letters to positions (0 for 'A', 4 for 'E', etc.)
     pos1 = ord(char1.upper()) - ord('A')
@@ -145,12 +89,11 @@ def alphabet_difference(char1: str, char2: str) -> str:
     return result_letter
 
 
-def find_best_shift(segment, expected_frequencies) -> str:
+def find_best_shift(segment: str, expected_frequencies: dict) -> str:
     """
     Finds the best shift for a given frequency segment to minimize the chi-squared value
     compared to English letter frequencies.
     """
-    # TODO: Write tests for this function
     # Get initial frequencies of the segment
     frequencies_segment = get_letter_frequencies(segment)
     best_xi_squared = float('inf')
@@ -179,7 +122,7 @@ def get_key(cipher: str, key_len: int, language: dict) -> str:
     Try to find the key value for a given key length
 
     :param language: The language
-    :param cipher: The cipher
+    :param cipher: The cipher.
     :param key_len: The key length
     :return: The key value
     """
@@ -225,11 +168,12 @@ def get_letter_frequencies(text) -> dict[str, float]:
     text_length = len(text)
 
     # Make a sorted list
-    sorted_list = [(letter, letter_count) for letter, letter_count in Counter(text).items()]
+    sorted_list = list(Counter(text).items())
     sorted_list.sort(key=lambda x: x[1], reverse=True)
 
     # Return it in dict format
-    return {letter: round(letter_count / text_length * 100, 2) for letter, letter_count in sorted_list}
+    return {letter: round(letter_count / text_length * 100, 2) for
+            letter, letter_count in sorted_list}
 
 
 def get_xi_squared_value(frequencies, expected_frequencies) -> float:
@@ -247,43 +191,55 @@ def get_xi_squared_value(frequencies, expected_frequencies) -> float:
     return xi_squared
 
 
-def solve_vigenere(crypt: str, key_len: int, language: dict) -> str:
+def find_best_key_length(cipher: str, max_key_len: int) -> int:
     """
-    Solve the vigenere cipher
-    :param language: The language
-    :param crypt: The cipher
-    :param key_len: The key length
+    Find the best key length for a given cipher.
+    :param cipher: The cipher
+    :param max_key_len: The maximum key length
+    :return: The best key length
+    """
+    patterns = find_three_letter_patterns(cipher)
+    distances = get_index_spacing(cipher, list(patterns.keys()))
+    max_dividers = 0
+    best_key_len = 0
+    for key_len in range(2, max_key_len + 1):
+        # Check the dividers
+        dividers = check_dividers(distances, key_len)
+        if dividers[key_len] > max_dividers:
+            max_dividers = dividers[key_len]
+            best_key_len = key_len
+
+        # If the key length is a multiple of the best key length,
+        # check if it is in 75% of the best key length, then it becomes the best
+        elif key_len % best_key_len == 0 and dividers[key_len] >= 0.75 * max_dividers:
+            max_dividers = dividers[key_len]
+            best_key_len = key_len
+    return best_key_len
+
+
+def solve_vigenere(cipher: str, max_key_len: int) -> dict:
+    """
+    Solve the vigenere cipher.
+    :param cipher: The cipher
+    :param max_key_len: The key length
     :return: The solved cipher
     """
-    # TODO Write tests for this function
-    key = get_key(crypt, key_len, language)
-    return decrypt_vigenere(crypt, key)
+    min_xi_squared = float("inf")
+    best_item = None
 
+    best_key_len = find_best_key_length(cipher, max_key_len)
+    for language in [ENGLISH, DUTCH, GERMAN, FRENCH, SPANISH, ITALIAN]:
+        # Get the key and decrypt the text
+        key = get_key(cipher, best_key_len, language)
+        decrypted_text = decrypt_vigenere(cipher, key)
 
-if __name__ == "__main__":
-    with open("vigenere/three-part-segments/output_10k.txt", "r") as file:
-        data = json.load(file)
-    LANGUAGE = POLISH
-    stack = TopNStack(1)
-    max_val = 5400
-    for i in range(max_val):
-        item = data[0]
-        for j in range(2, 11):
-            key_len = j
-            crypt = item[1][1]
-
-            key = get_key(crypt, key_len, LANGUAGE)
-            solved = decrypt_vigenere(crypt, key)
-            frequencies = get_letter_frequencies(solved)
-            min_xi = float("inf")
-            xi_squared = get_xi_squared_value(frequencies, LANGUAGE)
-            stack.push(json.dumps({
+        # Get the xi squared value and compare it to the minimum xi squared value
+        xi_squared = get_xi_squared_value(get_letter_frequencies(decrypted_text), language)
+        if xi_squared < min_xi_squared:
+            min_xi_squared = xi_squared
+            best_item = {
                 "key": key,
-                "solved": solved,
-            }), -xi_squared)
+                "text": decrypted_text
+            }
 
-        if i % 100 == 0:
-            print_progress_bar(i, max_val)
-    print(stack.get_top_n()[0])
-    with open(f"vigenere/three-part-segments/solutions_polish.txt", "w") as file:
-        file.write(json.dumps(stack.get_top_n()))
+    return best_item

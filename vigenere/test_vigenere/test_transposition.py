@@ -2,8 +2,8 @@
 This file contains the tests for the transposition.py file
 """
 
-from vigenere.transposition import (get_column_length, get_columns, columns_to_text, permutate_columns,
-                                    find_three_letter_patterns)
+from vigenere.transposition import (get_column_length, get_all_poss_columns, columns_to_text, permutate_columns,
+                                    find_three_letter_patterns, solve_column_transposition)
 
 
 def test_get_column_length():
@@ -54,23 +54,27 @@ def test_get_columns():
     """
     Test the get_columns method
     """
-    # From example 1.7 p25 of the course book
-    cols = get_columns("sendarmouredcartoheadquarters", 9)
-    assert cols == ["srer", "eeas", "ndd*", "dcq*", "aau*", "rra*", "mtr*", "oot*", "uhe*"]
+    cipher = "123456"
+    columns = get_all_poss_columns(cipher, 2)
+    assert columns == [['123', '456'], ['456', '123']]
+
+    cipher = "1234567"
+    columns = get_all_poss_columns(cipher, 2)
+    assert columns == [['1234', '567'], ['4567', '123']]
+
+    cipher = "12345678"
+    columns = get_all_poss_columns(cipher, 3)
+    assert columns == [['123', '456', '78'], ['123', '678', '45'], ['456', '123', '78'],
+                       ['678', '123', '45'], ['345', '678', '12'], ['678', '345', '12']]
 
 
 def test_columns_to_text():
     """
     Test the columns to text method
     """
-    # From example 1.7 p25 of the course book
-    cols = ["srer", "eeas", "ndd*", "dcq*", "aau*", "rra*", "mtr*", "oot*", "uhe*"]
-
-    # Permute the columns
-    permuted_cols = [cols[0], cols[2], cols[4], cols[1], cols[3], cols[5], cols[6], cols[8], cols[7]]
-
-    text = columns_to_text(permuted_cols)
-    assert text == "srernddaaueeasdcqrramtruheoot"
+    cols = ['TSTEEICWIDRISDO', 'HATHLSTOWBYFWNR', 'ITOOLFIROESTOOK', 'SESWTUOKUVAHUT', 'ISEWHNNSLEDILW']
+    text = columns_to_text(cols)
+    assert text == "THISISATESTTOSEEHOWWELLTHISFUNCTIONWORKSIWOULDBEVERYSADIFTHISWOULDNOTWORK"
 
 
 def test_permutate_columns():
@@ -107,3 +111,25 @@ def test_find_three_letter_patterns():
         "bca": 3,
         "cab": 3
     }
+
+
+def test_column_transposition():
+    """
+    Test the column transposition method
+    """
+    text = "THISISATESTTOSEEHOWWELLTHISFUNCTIONWORKSIWOULDBEVERYSADIFTHISWOULDNOTWORK"
+
+    # An example that has no permutation
+    cipher = "TSTEEICWIDRISDOHATHLSTOWBYFWNRITOOLFIROESTOOKSESWTUOKUVAHUTISEWHNNSLEDILW"
+    result = solve_column_transposition(cipher, 5)
+    assert text in result
+
+    # An example that has no permutation
+    cipher = ("HEELNOURTLRSOWSOIEDWTISHTCRLYHDKSOWSOIEDWTISHTCRLYHDKASEFNWVIOWTTELUWOEFUOITWIISBASOHEELNOURTLRASEFNW"
+              "VIOWSTOHTKDSINTTELUWOEFUOISHTCRLYHDKASEFNWVIOWSTOHTKDSINSTOHTKDSINTTELUWOEFUOITWIISBASOITWIISBASOHE"
+              "ELNOURTLRSOWSOIEDWT")
+    text = ("THISISATESTTOSEEHOWWELLTHISFUNCTIONWORKSIWOULDBEVERYSADIFTHISWOULDNOTWORKTHISISATESTTOSEEHOWWELLTHISFUN"
+            "CTIONWORKSIWOULDBEVERYSADIFTHISWOULDNOTWORKTHISISATESTTOSEEHOWWELLTHISFUNCTIONWORKSIWOULDBEVERYSADI"
+            "FTHISWOULDNOTWORK")
+    result = solve_column_transposition(cipher, 7)
+    assert text in result

@@ -13,7 +13,7 @@ def print_progress_bar(iteration, total, bar_length=40):
     """
     percent = f"{100 * (iteration / float(total)):.1f}"
     filled_length = int(bar_length * iteration // total)
-    bar = '█' * filled_length + '-' * (bar_length - filled_length)
-    print(f'\rProgress |{bar}| {percent}% Complete')
+    text_bar = '█' * filled_length + '-' * (bar_length - filled_length)
+    print(f'\rProgress |{text_bar}| {percent}% Complete')
     if iteration == total:
         print()  # New line on complete
