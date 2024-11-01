@@ -155,7 +155,11 @@ def solve_column_transposition(cipher: str, max_key_length: int) -> list:
     """
 
     stack = TopNStack(50)
+
+    # Values for the progress bar
     i = 0
+    total_column_count = sum(factorial(i) for i in range(2, max_key_length + 1))
+
     for key_length in range(2, max_key_length + 1):
         # Get the columns
         columns = get_all_poss_columns(cipher, key_length)
@@ -172,7 +176,7 @@ def solve_column_transposition(cipher: str, max_key_length: int) -> list:
 
             # Print the progress every once in a while
             if i % 1000 == 0:
-                print_progress_bar(i, factorial(max_key_length))
+                print_progress_bar(i, total_column_count)
             i += 1
 
     # While the difference between an option and the next best solution is less than 10%,

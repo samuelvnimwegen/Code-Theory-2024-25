@@ -28,4 +28,7 @@ def solve_vigenere_plus_column() -> None:
 
 
 if __name__ == "__main__":
+    import time
+    start_time = time.time()
     solve_vigenere_plus_column()
+    print(f"Runtime: {round(time.time() - start_time, 3)} seconds")
