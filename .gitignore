@@ -1,3 +1,4 @@
 .idea
 .venv
 __pycache__
+vigenere/three-part-segments
