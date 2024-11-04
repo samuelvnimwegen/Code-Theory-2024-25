@@ -18,6 +18,7 @@ class RotorWheel:
         assert rotor_wheel.isalpha(), "The rotor wheel must be an alphabetic string"
         assert len(rotor_wheel) == 26, "The rotor wheel must be 26 characters long"
         assert 0 <= position < 26, "The position must be between 0 and 25"
+        assert len(set(rotor_wheel)) == 26, "Each letter must be used exactly once in the rotor wheel"
 
         self.rotor_wheel: str = rotor_wheel
 
@@ -72,15 +73,15 @@ class RotorWheel:
 
         # Do the transformation normally
         if not reverse:
-            transformed_letter = reverse_shift_dict[letter]
+            transformed_letter = shift_dict[letter]
             transformed_letter = self.rotor_dict[transformed_letter]
-            transformed_letter = shift_dict[transformed_letter]
+            transformed_letter = reverse_shift_dict[transformed_letter]
         # Do the transformation in reverse
         else:
-            transformed_letter = reverse_shift_dict[letter]
+            transformed_letter = shift_dict[letter]
             inverted_rotor_dict = {v: k for k, v in self.rotor_dict.items()}
             transformed_letter = inverted_rotor_dict[transformed_letter]
-            transformed_letter = shift_dict[transformed_letter]
+            transformed_letter = reverse_shift_dict[transformed_letter]
         return transformed_letter
 
     def update_position(self) -> bool:

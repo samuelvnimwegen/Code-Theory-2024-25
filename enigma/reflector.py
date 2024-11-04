@@ -15,6 +15,7 @@ class Reflector:
         :param reflector_wheel: The reflector wheel to use
         """
         assert len(reflector_wheel) == 26, "The reflector wheel must be 26 characters long"
+        assert len(set(reflector_wheel)) == 26, "Each letter must be used exactly once in the reflector wheel"
         self.reflector_wheel: str = reflector_wheel
 
         # Make a dictionary for faster access

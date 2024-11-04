@@ -48,11 +48,12 @@ def test_get_letter():
     assert rotor_wheel.get_letter("B", reverse=True) == "A"
     assert rotor_wheel.get_letter("C", reverse=True) == "C"
 
-    # Now the rotor wheel is rotated by 1, letters B and C should now be swapped
+    # Now the rotor wheel is rotated by 1, letters "A" and "Z" should now be swapped
     rotor_wheel = RotorWheel("BACDEFGHIJKLMNOPQRSTUVWXYZ", 1)
-    assert rotor_wheel.get_letter("A") == "A"
-    assert rotor_wheel.get_letter("B") == "C"
-    assert rotor_wheel.get_letter("C") == "B"
+    assert rotor_wheel.get_letter("A") == "Z"
+    assert rotor_wheel.get_letter("Z") == "A"
+    assert rotor_wheel.get_letter("B") == "B"
+    assert rotor_wheel.get_letter("C") == "C"
 
 
 def test_get_alphabet_shift_perm():

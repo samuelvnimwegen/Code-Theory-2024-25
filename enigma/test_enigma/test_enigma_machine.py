@@ -48,6 +48,50 @@ def test_encrypt_letter():
         plugboard="ABCDEFGHIJKLMNOPQRSTUVWXYZ",
         rotor_positions=[0, 0, 0]
     )
-    assert enigma_machine.encrypt_letter("A") == "M"
-    assert enigma_machine.encrypt_letter("B") == "H"
-    assert enigma_machine.encrypt_letter("C") == "F"
+    assert enigma_machine.encrypt_letter("A") == "U"
+    assert enigma_machine.encrypt_letter("B") == "E"
+    assert enigma_machine.encrypt_letter("C") == "J"
+
+
+def test_enigma_machine_from_course():
+    """
+    Test the enigma machine from the course
+    """
+
+    enigma_machine = EnigmaMachine(
+        rotors=["ABDYEFGHIJKLMNOPQRSTUVWXCZ", "ACJDEFGHIBKLMNOPQRSXUTWVYZ", "XBAVEFGHIJRLMDOPCZSTUNWQYK"],
+        reflector="ARCDEFGHIJKLMNOPQBSTUVWXYZ",
+        plugboard="PBMDEFGHIJKLCNOAQRSWUVTXYZ",
+        rotor_positions=[1, 4, 23]
+    )
+
+    assert enigma_machine.encrypt_letter("P", update_rotors=True) == "W"
+    assert enigma_machine.encrypt_letter("A", update_rotors=True) == "C"
+
+
+def test_encrypt_text():
+    """
+    Test the encrypt_text method
+    """
+    enigma_machine = EnigmaMachine(
+        rotors=["ABDYEFGHIJKLMNOPQRSTUVWXCZ", "ACJDEFGHIBKLMNOPQRSXUTWVYZ", "XBAVEFGHIJRLMDOPCZSTUNWQYK"],
+        reflector="ARCDEFGHIJKLMNOPQBSTUVWXYZ",
+        plugboard="PBMDEFGHIJKLCNOAQRSWUVTXYZ",
+        rotor_positions=[1, 4, 23]
+    )
+
+    assert enigma_machine.encrypt_text("PA") == "WC"
+
+
+def test_decrypt_text():
+    """
+    Test the decrypt_text method
+    """
+    enigma_machine = EnigmaMachine(
+        rotors=["ABDYEFGHIJKLMNOPQRSTUVWXCZ", "ACJDEFGHIBKLMNOPQRSXUTWVYZ", "XBAVEFGHIJRLMDOPCZSTUNWQYK"],
+        reflector="ARCDEFGHIJKLMNOPQBSTUVWXYZ",
+        plugboard="PBMDEFGHIJKLCNOAQRSWUVTXYZ",
+        rotor_positions=[1, 4, 23]
+    )
+
+    assert enigma_machine.decrypt_text("WC") == "PA"
