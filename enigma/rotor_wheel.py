@@ -3,6 +3,29 @@ This file contains the RotorWheel class
 """
 
 
+def get_alphabet_shift_perm(shift_factor: int) -> dict["str", "str"]:
+    """
+    Get the alphabet shift permutation for a given shift factor
+
+    :param shift_factor: The shift factor.
+    :return: The dictionary that is representing the shift permutation
+    """
+
+    # We find the positive modulo of the shift factor
+    shift_factor = shift_factor % 26
+
+    # We create a dictionary to store the shift permutation
+    shift_permutation = {}
+    for i in range(26):
+        # Get the alphabet letter
+        letter = chr(i + 65)
+
+        # Get the letter at the index
+        shift_permutation[letter] = chr((i + shift_factor) % 26 + 65)
+
+    return shift_permutation
+
+
 class RotorWheel:
     """
     This class represents a rotor wheel of the enigma machine
@@ -33,28 +56,6 @@ class RotorWheel:
 
         self.position: int = position
 
-    def get_alphabet_shift_perm(self, shift_factor: int) -> dict["str", "str"]:
-        """
-        Get the alphabet shift permutation for a given shift factor
-
-        :param shift_factor: The shift factor.
-        :return: The dictionary that is representing the shift permutation
-        """
-
-        # We find the positive modulo of the shift factor
-        shift_factor = shift_factor % 26
-
-        # We create a dictionary to store the shift permutation
-        shift_permutation = {}
-        for i in range(26):
-            # Get the alphabet letter
-            letter = chr(i + 65)
-
-            # Get the letter at the index
-            shift_permutation[letter] = chr((i + shift_factor) % 26 + 65)
-
-        return shift_permutation
-
     def get_letter(self, letter: str, reverse: bool = False) -> str:
         """
         Get the letter for a given letter
@@ -68,8 +69,8 @@ class RotorWheel:
         assert letter in self.rotor_dict, "The letter must be in the rotor wheel"
 
         # Calculate the shift dict
-        shift_dict = self.get_alphabet_shift_perm(self.position)
-        reverse_shift_dict = self.get_alphabet_shift_perm(-self.position)
+        shift_dict = get_alphabet_shift_perm(self.position)
+        reverse_shift_dict = get_alphabet_shift_perm(-self.position)
 
         # Do the transformation normally
         if not reverse:

@@ -11,7 +11,7 @@ class EnigmaMachine:
     This class represents the enigma machine
     """
 
-    def __init__(self, rotors: list[str], reflector: str, plugboard: list[tuple[str, str]], rotor_positions: list[int]):
+    def __init__(self, rotors: list[str], reflector: str, plugboard: str, rotor_positions: list[int]):
         """
         Initializes the enigma machine
         """

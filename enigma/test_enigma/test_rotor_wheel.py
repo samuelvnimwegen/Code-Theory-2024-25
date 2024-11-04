@@ -61,18 +61,18 @@ def test_get_alphabet_shift_perm():
     Test the get_alphabet_shift_perm method
     """
     rotor_wheel = RotorWheel()
-    shift = rotor_wheel.get_alphabet_shift_perm(0)
+    shift = get_alphabet_shift_perm(0)
     assert shift["A"] == "A"
     assert shift["Z"] == "Z"
 
     rotor_wheel = RotorWheel()
-    shift = rotor_wheel.get_alphabet_shift_perm(1)
+    shift = get_alphabet_shift_perm(1)
     assert shift["A"] == "B"
     assert shift["B"] == "C"
     assert shift["Z"] == "A"
 
     rotor_wheel = RotorWheel()
-    shift = rotor_wheel.get_alphabet_shift_perm(-1)
+    shift = get_alphabet_shift_perm(-1)
     assert shift["A"] == "Z"
     assert shift["B"] == "A"
 
