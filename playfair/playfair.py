@@ -1,10 +1,14 @@
-from playfair_matrix import PlayfairMatrix
-from utils import preconditions, playfair_methods
+import random
+import sys
+sys.path.append("..")
+
+from playfair.playfair_matrix import PlayfairMatrix
+from playfair.utils import preconditions, playfair_methods
 
 
 class Playfair:
     def __init__(self, keyword: str):
-        self.keyword = keyword
+        self.keyword = keyword.upper()
         self.matrix_obj = PlayfairMatrix(keyword)
 
     def encrypt(self, plaintext: str) -> str:
@@ -14,19 +18,25 @@ class Playfair:
         :return: ciphertext/encrypted plaintext
         """
         assert preconditions.text_only_alphabet(plaintext)
-        assert preconditions.text_no_j(plaintext)
         assert preconditions.no_spaces_in_text(plaintext)
 
+        # Replace every J with a I
+        plaintext_no_J = playfair_methods.replace_J_with_I(plaintext)
+
         # First add X values to split text into correct digrams/duo's
-        splitted_text = playfair_methods.split_text_in_correct_pairs(plaintext)
+        splitted_text = playfair_methods.split_text_in_correct_pairs(plaintext_no_J)
 
+        replaced_text = ""
+        for i in range(len(splitted_text)//2):
+            letter_1 = splitted_text[i*2]
+            letter_2 = splitted_text[i*2 + 1]
 
+            # Add new pair letters to string
+            replaced_text += playfair_methods.replace_pairs(letter_1, letter_2, self.matrix_obj)
 
+        ciphertext = replaced_text
 
-
-
-        ciphertext = splitted_text
-
+        # Check some post conditions
         assert preconditions.text_only_alphabet(ciphertext)
         assert preconditions.text_no_j(ciphertext)
         assert preconditions.no_spaces_in_text(ciphertext)
@@ -43,11 +53,36 @@ class Playfair:
         assert preconditions.text_no_j(ciphertext)
         assert preconditions.no_spaces_in_text(ciphertext)
 
-        plaintext = ciphertext
+        # Only decrypt
+        replaced_text = ""
+        for i in range(len(ciphertext)//2):
+            letter_1 = ciphertext[i*2]
+            letter_2 = ciphertext[i*2 + 1]
 
+            # Add new pair letters to string
+            replaced_text += playfair_methods.replace_pairs(letter_1, letter_2, self.matrix_obj, False)
+
+        plaintext = replaced_text
+
+        # Check some post conditions
         assert preconditions.text_only_alphabet(plaintext)
         assert preconditions.text_no_j(plaintext)
         assert preconditions.no_spaces_in_text(plaintext)
 
         return plaintext
+
+
+def generate_random_Playfair_matrix() -> Playfair:
+    """
+    Generate a random Playfair matrix
+    :return: a Playfair matrix object
+    """
+    alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
+    # Convert the alphabet into a list
+    letters = list(alphabet)
+    # Shuffle the letters randomly
+    random.shuffle(letters)
+
+    key_string = "".join(letters)
+    return Playfair(key_string)
 

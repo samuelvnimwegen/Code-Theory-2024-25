@@ -10,7 +10,7 @@ class TestPlayfairMatrix(unittest.TestCase):
                            ['H', 'I', 'K', 'Q', 'U'],
                            ['V', 'W', 'X', 'Y', 'Z']]
 
-        playf_matrix = playfair_matrix.PlayfairMatrix('PALMERSTON')
+        playf_matrix = playfair_matrix.PlayfairMatrix('PALMERSTONE')
         self.assertEqual(playf_matrix.matrix, expected_result)  # add assertion here
 
 
