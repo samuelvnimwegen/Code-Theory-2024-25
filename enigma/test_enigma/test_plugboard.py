@@ -10,14 +10,14 @@ def test_get_corresponding_letter():
     Test the get_corresponding_letter method
     """
     # Test with a simple example
-    plugboard = Plugboard([("A", "B"), ("C", "D")])
+    plugboard = Plugboard("BADCFEHGJILKNMPORQTSVUXWZY")
     assert plugboard.get_corresponding_letter("A") == "B"
     assert plugboard.get_corresponding_letter("B") == "A"
     assert plugboard.get_corresponding_letter("C") == "D"
     assert plugboard.get_corresponding_letter("D") == "C"
 
     # Test with a more complex example
-    plugboard = Plugboard([("A", "B"), ("C", "D"), ("E", "F"), ("G", "H")])
+    plugboard = Plugboard("BADCFEHGIJKLMNOPQRSTUVWXYZ")
     assert plugboard.get_corresponding_letter("A") == "B"
     assert plugboard.get_corresponding_letter("B") == "A"
     assert plugboard.get_corresponding_letter("C") == "D"
