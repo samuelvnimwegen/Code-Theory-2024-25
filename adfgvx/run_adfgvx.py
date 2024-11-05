@@ -21,11 +21,6 @@ if __name__ == '__main__':
     # Get all transpositions for the data.
     print("Transposing data...")
     transpositions = get_transposition_chi_values(data, perms)
-    # transpositions = {(0,): [3,4,5,6,7,8],
-    #                   (1,0): [1,2,3,4,5,6],
-    #                   (1,0,2): [2,3,4,5,6,7],
-    #                   (2,1,0): [4,5,6,7,8,9]}
-    # perms = [(0,), (1,0), (1,0,2), (2,1,0)]
     lowest_done = []
     while True:
         if len(lowest_done) >= len(perms*len(languages)):
