@@ -5,7 +5,7 @@ This module contains the function to perform a column transposition and calculat
 
 def get_transposition_chi_values(text: str, keys: list[tuple[int, ...]]) -> dict[tuple[int, ...], list[float]]:
     from util.progress_bar import print_progress_bar as pb
-    from util.letter_frequency_tables import tables
+    from util.letter_frequency_table import tables
     """
     Transpose the text using the keys and calculate 
 

@@ -2,9 +2,9 @@ import copy
 import itertools
 from util.filestream import load as load_file
 from adfgvx.decode_morse import decode as decode_morse
-from util.letter_frequency_tables import tables as tables
+from util.letter_frequency_table import tables as tables
 from adfgvx.column_transposition import transpose as transpose
-from util.letter_frequency_tables import tables_names as languages
+from util.letter_frequency_table import tables_names as languages
 from adfgvx.column_transposition import get_letter_frequencies as get_letter_frequencies
 from adfgvx.column_transposition import get_transposition_chi_values as get_transposition_chi_values
 
