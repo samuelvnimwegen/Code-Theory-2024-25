@@ -17,7 +17,7 @@ def get_transposition_chi_values(text: str, keys: list[tuple[int, ...]]) -> dict
     iteration = 0
     for key in keys:
         # Get transposition
-        transposed = transpose(text, key)
+        transposed = reverse_transpose(text, key)
         # Calculate Frequencies
         frequencies = get_letter_frequencies(transposed)
         # Calculate Chi-Squared value
@@ -32,7 +32,7 @@ def get_transposition_chi_values(text: str, keys: list[tuple[int, ...]]) -> dict
     return transpositions
 
 
-def transpose(text, key: tuple[int, ...]) -> str:
+def reverse_transpose(text, key: tuple[int, ...]) -> str:
     """
     Transpose the text using the key
 
@@ -40,15 +40,26 @@ def transpose(text, key: tuple[int, ...]) -> str:
     :param key: The key
     :return: The transposed text
     """
-    transposed_list = ["" for _ in range(len(key))]
-    # Add the text to the right column
-    for i, char in enumerate(text):
-        transposed_list[i % len(key)] += char
-    # Add the columns
+    text_len = len(text)
+    amount_of_keys = len(key)
+    transposed_list = ["" for _ in range(amount_of_keys)]
+    # Get the amount of letters in each column
+    amount_of_letters = dict()
+    for i in range(amount_of_keys):
+        amount_of_letters[key[i]] = text_len // amount_of_keys
+        # Add one to the amount of letters if there is remainder in text_len / amount_of_keys
+        if i < text_len % amount_of_keys:
+            amount_of_letters[key[i]] += 1
+    for i in range(amount_of_keys):
+        # Get first amount_of_letters[i] characters from string
+        transposed_list[i] = text[0:amount_of_letters[i]]
+        # Remove first amount_of_letters[i] characters from string
+        text = text[amount_of_letters[i]:]
     transposed = str()
-    for i in range(len(key)):
-        index = key.index(i)
-        transposed += transposed_list[index]
+    for i in range(text_len // amount_of_keys + 1):
+        for j in key:
+            if i < len(transposed_list[j]):
+                transposed += transposed_list[j][i]
     return transposed
 
 
