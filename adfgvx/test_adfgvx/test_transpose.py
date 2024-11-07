@@ -47,3 +47,18 @@ def test_transpose3():
     original_text = "XAVGGDGDGFXGGXVDDDGVGDDFDXDXAXAXVGFDXGGGGXGVAX"
     result = reverse_transpose(after_transpose, key)
     assert result == original_text, f"Expected {original_text} but got {result}"
+
+
+def test_transpose4():
+    """
+    Test the transpose function with an example from the lecture slides.
+    :return:
+    """
+    # Expected gotten from https://www.boxentriq.com/code-breaking/columnar-transposition-cipher
+    # original_text is just random letters from ["A", "D", "F", "G", "V", "X"]
+    after_transpose = "DAAVAFFXFAVDVAGFFGXGFAADDXDFFDXAGFGAXVVDDFAGVXDFFDXGVGFXAXVAVGXGDAXFAVDVDXAVVVXFGGVFAADFDXADFGFDVVVGDFFVDGXAVGGXDAXVFXVFXDVDXAXAXAGAGGAAXXXGXXVDXXDXDDVFFDFDFAXVDAVXDDXAVGAXDAGDAAVVFFDGFVAAVDAVAAVFFFAF"
+    # key = "TESTKEY"
+    key = (4, 0, 3, 5, 2, 1, 6)
+    original_text = "XDADXDDVADXVXAFAFXAAGXVDDVGDVAXXGFAFFADXGAXFDDGAVDXFVDXVVFGFAVFDAFFXVFXVDDFDDADVFADGXVVDVFFAAVFDAVXGGAVGAAFDXDVAGFFVXXVAGFDADDGXVAVFAGGDVVFVAFGXVDAAAXDXXAXAADFGVXDVXGVFXDGAGGFGXGVVFFXDXGFXAXFDAAAFVFAX"
+    result = reverse_transpose(after_transpose, key)
+    assert result == original_text, f"Expected {original_text} but got {result}"
