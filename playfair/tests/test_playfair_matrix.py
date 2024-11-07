@@ -1,5 +1,5 @@
 import unittest
-from playfair import playfair_matrix
+from playfair.src import playfair_matrix
 
 
 class TestPlayfairMatrix(unittest.TestCase):

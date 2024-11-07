@@ -1,5 +1,6 @@
 import copy
-from ..playfair_matrix import PlayfairMatrix
+
+from playfair.src.playfair_matrix import PlayfairMatrix
 
 def replace_J_with_I(text: str) -> str:
     replace_string = ""
@@ -86,6 +87,28 @@ def replace_pairs(letter_1: str, letter_2: str, matrix: PlayfairMatrix, encrypti
     new_letter1 = matrix.get_letter(row_l1, col_l2)
     new_letter2 = matrix.get_letter(row_l2, col_l1)
     return new_letter1 + new_letter2
+
+
+def swap_two_letters(text: str, pos1: int, pos2: int) -> str:
+    """
+    Swap two letters in a string with given positions
+    :param text: text with letters to swap
+    :param pos1: position letter 1
+    :param pos2: position letter 2
+    :return: string with swapped letters
+    """
+    # Get lowest and highest value
+    first_pos = min(pos1, pos2)
+    second_pos = max(pos1, pos2)
+
+    # Get of string first part until first letter, then place second letter,
+    # then the part between them and finally first letter followed by end
+    first_part = text[:first_pos]
+    middle_part = text[first_pos + 1:second_pos]
+    last_part = text[second_pos + 1:]
+    new_text = first_part + text[second_pos] + middle_part + text[first_pos] + last_part
+
+    return new_text
 
 
 

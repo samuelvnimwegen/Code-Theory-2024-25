@@ -1,9 +1,8 @@
 import random
-import sys
-sys.path.append("..")
+from copy import copy
 
-from playfair.playfair_matrix import PlayfairMatrix
-from playfair.utils import preconditions, playfair_methods
+from playfair.src.playfair_matrix import PlayfairMatrix
+from playfair.src.utils import preconditions, playfair_methods
 
 
 class Playfair:
@@ -85,4 +84,26 @@ def generate_random_Playfair_matrix() -> Playfair:
 
     key_string = "".join(letters)
     return Playfair(key_string)
+
+
+def create_random_modified_matrix(parent_matrix: Playfair) -> Playfair:
+    """
+    Create a random modified version of the given Playfair matrix
+    :param parent_matrix: the matrix to modify
+    :return: playfair modified matrix
+    """
+    parent_key = copy(parent_matrix.keyword)
+
+    # Get 2 random letter positions in keyword and swap them
+    pos1, pos2 = random.sample(range(25), 2)
+    new_key = playfair_methods.swap_two_letters(parent_key, pos1, pos2)
+
+    return Playfair(new_key)
+
+
+
+
+
+
+
 

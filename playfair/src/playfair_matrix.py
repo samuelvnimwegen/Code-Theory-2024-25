@@ -1,5 +1,5 @@
 import random
-from playfair.utils import preconditions
+from playfair.src.utils import preconditions
 
 
 class PlayfairMatrix:
@@ -50,6 +50,7 @@ class PlayfairMatrix:
 
     def get_letter(self, row: int, column: int) -> str:
         return self.matrix[row][column]
+
 
 
 

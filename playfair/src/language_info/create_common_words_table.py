@@ -1,10 +1,8 @@
 """
 This file was a one time use to create the lists of common words
 """
-import sys
-sys.path.append("..")
 
-from scoring_algorithms import languages
+from playfair.src.scoring_algorithms import languages
 
 if __name__ == '__main__':
     text = "\n\n"

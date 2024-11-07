@@ -1,5 +1,5 @@
 import unittest
-from playfair.utils import preconditions
+from playfair.src.utils import preconditions
 
 
 class TestPrecondition(unittest.TestCase):
