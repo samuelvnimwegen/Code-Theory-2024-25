@@ -44,6 +44,11 @@ class EnigmaGraph:
         Creates the graph
         """
         for i in range(len(self.crib)):
-            edge = EnigmaEdge(self.crib[i], self.encrypted_text[i], i + 1)
+            # Of the two letters, the one with the smallest ASCII value is the first node
+            min_l = min(self.crib[i], self.encrypted_text[i])
+            max_l = max(self.crib[i], self.encrypted_text[i])
+
+            # Create the edge
+            edge = EnigmaEdge(min_l, max_l, i + 1)
             self.edges[self.crib[i]].append(edge)
             self.edges[self.encrypted_text[i]].append(edge)

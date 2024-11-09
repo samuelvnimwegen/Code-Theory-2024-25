@@ -2,7 +2,7 @@
 This file contains the tests for the rotor_wheel.py file
 """
 
-from enigma.rotor_wheel import RotorWheel
+from enigma.rotor_wheel import RotorWheel, get_alphabet_shift_perm
 
 
 def test_get_letter():
@@ -60,18 +60,15 @@ def test_get_alphabet_shift_perm():
     """
     Test the get_alphabet_shift_perm method
     """
-    rotor_wheel = RotorWheel()
     shift = get_alphabet_shift_perm(0)
     assert shift["A"] == "A"
     assert shift["Z"] == "Z"
 
-    rotor_wheel = RotorWheel()
     shift = get_alphabet_shift_perm(1)
     assert shift["A"] == "B"
     assert shift["B"] == "C"
     assert shift["Z"] == "A"
 
-    rotor_wheel = RotorWheel()
     shift = get_alphabet_shift_perm(-1)
     assert shift["A"] == "Z"
     assert shift["B"] == "A"

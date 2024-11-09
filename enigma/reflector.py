@@ -16,6 +16,15 @@ class Reflector:
         """
         assert len(reflector_wheel) == 26, "The reflector wheel must be 26 characters long"
         assert len(set(reflector_wheel)) == 26, "Each letter must be used exactly once in the reflector wheel"
+
+        # Check symmetry
+        for i in range(26):
+            position_letter = chr(i + 65)
+            pic_letter = reflector_wheel[i]
+            pic_index = ord(pic_letter) - 65
+            sym_letter = reflector_wheel[pic_index]
+            assert sym_letter == position_letter, "The plugboard must be symmetric"
+
         self.reflector_wheel: str = reflector_wheel
 
         # Make a dictionary for faster access

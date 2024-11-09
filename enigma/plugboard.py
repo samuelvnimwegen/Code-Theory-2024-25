@@ -17,6 +17,13 @@ class Plugboard:
         assert plugs.isalpha(), "The plugs must be alphabetic characters"
         assert len(plugs) == 26, "The plugboard must cover all 26 letters of the alphabet"
         assert len(set(plugs)) == 26, "Each letter must be used exactly once in the plugboard"
+        # Check symmetry
+        for i in range(26):
+            position_letter = chr(i + 65)
+            pic_letter = plugs[i]
+            pic_index = ord(pic_letter) - 65
+            sym_letter = plugs[pic_index]
+            assert sym_letter == position_letter, "The plugboard must be symmetric"
 
         self.plugs: str = plugs
 

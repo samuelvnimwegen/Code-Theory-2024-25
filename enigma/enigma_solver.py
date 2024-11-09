@@ -2,9 +2,12 @@
 This is the EnigmaSolver class.
 """
 import itertools
+import json
 
 from enigma.enigma_graph import EnigmaGraph
 from enigma.enigma_matrix import EnigmaMatrix
+
+from util.progress_bar import print_progress_bar
 
 
 class EnigmaSolver:
@@ -32,14 +35,21 @@ class EnigmaSolver:
         # Try all rotor configurations
         rotor_configurations = self.get_rotor_possibilities([rotor0, rotor1, rotor2, rotor3, rotor4])
         i = 0
+        total_results = []
         for rotor_configuration in rotor_configurations:
             print("Now trying rotor configuration:", i)
+            print_progress_bar(i, 60)
             rotor1, rotor2, rotor3 = rotor_configuration
-            if enigma_matrix.try_rotor_configuration(rotor1, rotor2, rotor3, reflector):
-                print(f"{rotor1} {rotor2} {rotor3}")
-                return
 
-        print("No solution found")
+            results: list = enigma_matrix.try_rotor_configuration(rotor1, rotor2, rotor3, reflector)
+            if len(results) > 0:
+                print(f"{rotor1} {rotor2} {rotor3}")
+                total_results += results
+            i += 1
+
+        # Save the results to a file
+        with open("results_enigma.txt", "w") as file:
+            json.dump(total_results, file, indent=4)
         return
 
     @staticmethod
