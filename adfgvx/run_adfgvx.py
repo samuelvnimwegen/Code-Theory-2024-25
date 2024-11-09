@@ -9,24 +9,13 @@ from util.letter_frequency_table import tables_names as languages
 from adfgvx.column_transposition import get_letter_frequencies as get_letter_frequencies
 from adfgvx.column_transposition import get_transposition_chi_values as get_transposition_chi_values
 
-if __name__ == '__main__':
-    # Load the morse code from the file.
-    morse = load_file('codes/03-OPGAVE-adfgvx.txt')
-    # Decode the morse code.
-    data = decode_morse(morse)
-    # Get all permutations for a key of max length 10. (And remove ordered permutations except first)
-    print("Generating permutations...")
-    perms = [perm for i in range(1, 11) for perm in itertools.permutations(range(i)) if list(perm) != sorted(perm)]
-    perms.insert(0, (0,))
-    print("Generated " + str(len(perms)) + " permutations.")
-    # Get all transpositions for the data.
-    print("Transposing data...")
-    transpositions = get_transposition_chi_values(data, perms)
+
+def loop_over_lowest():
     lowest_done = []
     while True:
-        if len(lowest_done) >= len(perms*len(languages)):
+        if len(lowest_done) >= len(perms * len(languages)):
             break
-        # Get the key order with the lowest chi-squared value.
+            # Get the key order with the lowest chi-squared value.
         lowest = ((0,), float('inf'), 0)
         for key in perms:
             for chi in transpositions[key]:
@@ -52,38 +41,60 @@ if __name__ == '__main__':
             if choice == "1":
                 break
             elif choice == "2":
-                # Transpose the text using the key order with the lowest chi-squared value.
-                original_text = transpose(data, lowest[0])
-                text = copy.deepcopy(original_text)
-                # Print options
-                print("Options:")
-                print("XX/x. A valid pair of letters to swap with the latter letter")
-                print("x/XX. A valid pair of letters to swap with the former letter (revert)")
-                print("Exit")
-                while True:
-                    # Print the text, frequencies of the text and frequencies of the closest language.
-                    print("Original Text: " + original_text)
-                    print("Text: " + text)
-                    print("Frequencies: " + str(get_letter_frequencies(text)))
-                    print("Language: " + str(tables[lowest[2]]))
-                    choice = input("")
-                    # Exit
-                    if choice == "Exit":
-                        break
-                    # Check if the choice is a valid pair of letters to swap with the latter letter.
-                    elif len(choice) == 4 and (choice[1] == '/' or choice[2] == '/'):
-                        if choice[1] == '/':
-                            # Swap the latter letter with the former letter.
-                            text = text.replace(choice[0], choice[2]+choice[3])
-                        elif choice[2] == '/':
-                            # Swap the former letter with the latter letter.
-                            text = text.replace(choice[0]+choice[1], choice[3])
-                        else:
-                            print("Invalid choice.")
-                    else:
-                        print("Invalid choice.")
+                frequency_analysis(lowest)
             # Exit program
             elif choice == "3":
                 exit()
             else:
                 print("Invalid choice.")
+
+
+def frequency_analysis(lowest: tuple[tuple[int, ...], float, int]):
+    # Transpose the text using the key order with the lowest chi-squared value.
+    original_text = transpose(data, lowest[0])
+    text = copy.deepcopy(original_text)
+    # Print the text, frequencies of the text and frequencies of the closest language.
+    print("Original Text: " + original_text)
+    print("Text: " + text)
+    frequencies = get_letter_frequencies(text)
+    print("Frequencies: " + str(frequencies))
+    print("Language: " + str(tables[lowest[2]]))
+    # Substitute letters in the text with the closest letter in the language.
+    for i in range(26):
+        for j in range(len(text), 2):
+            if text[j] + text[j+1] == list(frequencies.keys())[i]:
+                text = text[:j] + list(tables[lowest[2]].keys())[i] + text[j+1:]
+    print(text)
+    ...
+
+    # while True:
+    #     # Exit
+    #     if choice == "Exit":
+    #         break
+    #     # Check if the choice is a valid pair of letters to swap with the latter letter.
+    #     elif len(choice) == 4 and (choice[1] == '/' or choice[2] == '/'):
+    #         if choice[1] == '/':
+    #             # Swap the latter letter with the former letter.
+    #             text = text.replace(choice[0], choice[2]+choice[3])
+    #         elif choice[2] == '/':
+    #             # Swap the former letter with the latter letter.
+    #             text = text.replace(choice[0]+choice[1], choice[3])
+    #         else:
+    #             print("Invalid choice.")
+    #     else:
+    #         print("Invalid choice.")
+
+if __name__ == '__main__':
+    # Load the morse code from the file.
+    morse = load_file('codes/03-OPGAVE-adfgvx.txt')
+    # Decode the morse code.
+    data = decode_morse(morse)
+    # Get all permutations for a key of max length 10. (And remove ordered permutations except first)
+    print("Generating permutations...")
+    perms = [perm for i in range(1, 11) for perm in itertools.permutations(range(i)) if list(perm) != sorted(perm)]
+    perms.insert(0, (0,))
+    print("Generated " + str(len(perms)) + " permutations.")
+    # Get all transpositions for the data.
+    print("Transposing data...")
+    transpositions = get_transposition_chi_values(data, perms)
+    loop_over_lowest()
