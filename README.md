@@ -7,3 +7,6 @@ Dit project bevat de oplossingen van de volgende codes:
 
 ## Vigenère + Enkele-Kolom-Transpositie
 Uitleg + documentatie is te vinden in de map [vigenere](vigenere/README.md).
+
+## Enigma
+Uitleg + documentatie is te vinden in de map [enigma](enigma/README.md).
