@@ -110,6 +110,9 @@ class EnigmaMatrix:
             if self.is_valid(edges)[0]:
                 conf: dict = self.return_configuration(it, self.is_valid(edges)[1], rotor1, rotor2, rotor3)
                 solutions.append(conf)
+                print("*" * 50)
+                print("Found a valid configuration")
+                print("*" * 50)
                 if insta_return:
                     return solutions
 
@@ -237,7 +240,7 @@ class EnigmaMatrix:
         """
         Returns the configuration of the enigma machine
         """
-        # Since we start counting from 1 while making the graph, we need to add 1 to the iterations
+        # Since we start counting from 1 while making the graph, we nee d to add 1 to the iterations
         iterations += 1
 
         # Get the rotor configuration
