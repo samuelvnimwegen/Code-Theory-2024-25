@@ -1,8 +1,8 @@
 # Code Theorie 2024-25
 Dit project bevat de oplossingen van de volgende codes:
-- [ ] Enigma
+- [x] Enigma
 - [ ] Playfair
-- [ ] Vignère + extra kolom-operatie
+- [x] Vignère + extra kolom-operatie
 - [ ] ADFGVX
 
 ## Vigenère + Enkele-Kolom-Transpositie
