@@ -1,9 +1,0 @@
-[
-    {
-        "rotor_config": "EFI",
-        "plugboard": "KBCXEUGNSWALMHOPQRITFVJDYZ",
-        "rotor_slow": "EKMFLGDQVZNTOWYHXUSPAIBRCJ",
-        "rotor_middle": "THEQUICKBROWNFXJMPSVLAZYDG",
-        "rotor_fast": "XANTIPESOKRWUDVBCFGHJLMQYZ"
-    }
-]

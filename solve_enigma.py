@@ -34,8 +34,9 @@ def solve_enigma() -> None:
         "encrypted_text": encrypted_text,
     }
 
-    x = EnigmaSolver()
-    x.solve(variables)
+    x = EnigmaSolver(variables)
+    x.save_correct_configurations()
+    x.load_and_decrypt_solutions()
 
 
 if __name__ == "__main__":
