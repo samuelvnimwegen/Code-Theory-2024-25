@@ -1,6 +1,8 @@
 """
-This module contains the function to perform a column transposition and calculate Chi-squared values
+This module contains the functions to perform a column transposition and calculate Chi-squared values
 """
+
+from adfgvx.frequency_analysis import get_letter_frequencies
 
 
 def get_transposition_chi_values(text: str, keys: list[tuple[int, ...]]) -> dict[tuple[int, ...], list[float]]:
@@ -60,21 +62,6 @@ def reverse_transpose(text, key: tuple[int, ...]) -> str:
     return ''.join(transposed)
 
 
-def get_letter_frequencies(text) -> dict[str, float]:
-    from collections import Counter
-    """
-    Get the letter combination frequencies of some text.
-
-    :param text: The text
-    :return: The letter frequencies
-    """
-    bigram_counts = Counter(text[i:i + 2] for i in range(0, len(text) - 1, 2))
-    total = sum(bigram_counts.values())
-
-    sorted_bigrams = sorted(bigram_counts.items(), key=lambda x: x[1], reverse=True)
-    return {k: round(100 * v / total, 2) for k, v in sorted_bigrams}
-
-
 def get_xi_squared_value(frequencies, expected_frequencies) -> float:
     """
     Get the xi squared value of two frequency dictionaries
@@ -83,8 +70,5 @@ def get_xi_squared_value(frequencies, expected_frequencies) -> float:
     :param expected_frequencies: The expected frequencies
     :return: The xi squared value
     """
-    # Assume no numbers in text
-    if len(frequencies) > 26:
-        return float('inf')
     xi_squared = sum(((observed - expected) ** 2) / expected for observed, expected in zip(frequencies.values(), expected_frequencies.values()))
     return xi_squared

@@ -2,7 +2,7 @@
 This file contains the tests for the bigram_frequencies module.
 """
 
-from adfgvx.column_transposition import get_letter_frequencies as get_letter_frequencies
+from adfgvx.frequency_analysis import get_letter_frequencies as get_letter_frequencies
 
 
 def test_frequencies1():

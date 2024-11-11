@@ -3,86 +3,9 @@ import itertools
 
 from util.filestream import load as load_file
 from adfgvx.decode_morse import decode as decode_morse
-from util.letter_frequency_table import tables as tables
-from adfgvx.column_transposition import reverse_transpose as transpose
-from util.letter_frequency_table import tables_names as languages
-from adfgvx.column_transposition import get_letter_frequencies as get_letter_frequencies
-from adfgvx.column_transposition import get_transposition_chi_values as get_transposition_chi_values
+from adfgvx.frequency_analysis import loop_over_lowest_chi_squared
+from adfgvx.column_transposition import get_transposition_chi_values
 
-
-def loop_over_lowest():
-    lowest_done = []
-    while True:
-        if len(lowest_done) >= len(perms * len(languages)):
-            break
-            # Get the key order with the lowest chi-squared value.
-        lowest = ((0,), float('inf'), 0)
-        for key in perms:
-            for chi in transpositions[key]:
-                # If the chi-squared value is lower than the current lowest chi-squared value.
-                if chi < lowest[1]:
-                    # If the key order is already done, skip.
-                    if (key, chi, transpositions[key].index(chi)) in lowest_done:
-                        continue
-                    # Set the new lowest chi-squared value.
-                    lowest = (key, chi, transpositions[key].index(chi))
-        # Add to lowest_done
-        lowest_done.append(lowest)
-        # Print the key order with the lowest chi-squared value.
-        print("Key order with lowest chi-squared value: " + str(lowest[0]) + " with value: " + str(lowest[1]) + " for language: " + languages[lowest[2]])
-        while True:
-            # Print options
-            print("Options:")
-            print("1. Continue to next lowest chi-squared value")
-            print("2. Try frequency analysis")
-            print("3. Exit")
-            choice = input("")
-            # Continue to next lowest chi-squared value
-            if choice == "1":
-                break
-            elif choice == "2":
-                frequency_analysis(lowest)
-            # Exit program
-            elif choice == "3":
-                exit()
-            else:
-                print("Invalid choice.")
-
-
-def frequency_analysis(lowest: tuple[tuple[int, ...], float, int]):
-    # Transpose the text using the key order with the lowest chi-squared value.
-    original_text = transpose(data, lowest[0])
-    text = copy.deepcopy(original_text)
-    # Print the text, frequencies of the text and frequencies of the closest language.
-    print("Original Text: " + original_text)
-    print("Text: " + text)
-    frequencies = get_letter_frequencies(text)
-    print("Frequencies: " + str(frequencies))
-    print("Language: " + str(tables[lowest[2]]))
-    # Substitute letters in the text with the closest letter in the language.
-    for i in range(26):
-        for j in range(len(text), 2):
-            if text[j] + text[j+1] == list(frequencies.keys())[i]:
-                text = text[:j] + list(tables[lowest[2]].keys())[i] + text[j+1:]
-    print(text)
-    ...
-
-    # while True:
-    #     # Exit
-    #     if choice == "Exit":
-    #         break
-    #     # Check if the choice is a valid pair of letters to swap with the latter letter.
-    #     elif len(choice) == 4 and (choice[1] == '/' or choice[2] == '/'):
-    #         if choice[1] == '/':
-    #             # Swap the latter letter with the former letter.
-    #             text = text.replace(choice[0], choice[2]+choice[3])
-    #         elif choice[2] == '/':
-    #             # Swap the former letter with the latter letter.
-    #             text = text.replace(choice[0]+choice[1], choice[3])
-    #         else:
-    #             print("Invalid choice.")
-    #     else:
-    #         print("Invalid choice.")
 
 if __name__ == '__main__':
     # Load the morse code from the file.
@@ -92,9 +15,11 @@ if __name__ == '__main__':
     # Get all permutations for a key of max length 10. (And remove ordered permutations except first)
     print("Generating permutations...")
     perms = [perm for i in range(1, 11) for perm in itertools.permutations(range(i)) if list(perm) != sorted(perm)]
+    # perms = [(2, 0, 1)]
     perms.insert(0, (0,))
     print("Generated " + str(len(perms)) + " permutations.")
     # Get all transpositions for the data.
     print("Transposing data...")
     transpositions = get_transposition_chi_values(data, perms)
-    loop_over_lowest()
+    # transpositions = {(0,): [500, 500, 500, 500, 500, 500], (2, 0, 1): [0, 2, 23, 4, 5, 6]}
+    loop_over_lowest_chi_squared(data, perms, transpositions)
