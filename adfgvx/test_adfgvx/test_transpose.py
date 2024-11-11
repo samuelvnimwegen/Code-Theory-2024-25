@@ -55,7 +55,8 @@ def test_transpose4():
     :return:
     """
     # Expected gotten from https://www.boxentriq.com/code-breaking/columnar-transposition-cipher
-    # original_text is just random letters from ["A", "D", "F", "G", "V", "X"]
+    # Checked with https://www.dcode.fr/transposition-cipher
+    # original_text is just random letters from ["A", "D", "F", "G", "V", "X"] (even amount of letters)
     after_transpose = "DAAVAFFXFAVDVAGFFGXGFAADDXDFFDXAGFGAXVVDDFAGVXDFFDXGVGFXAXVAVGXGDAXFAVDVDXAVVVXFGGVFAADFDXADFGFDVVVGDFFVDGXAVGGXDAXVFXVFXDVDXAXAXAGAGGAAXXXGXXVDXXDXDDVFFDFDFAXVDAVXDDXAVGAXDAGDAAVVFFDGFVAAVDAVAAVFFFAF"
     # key = "TESTKEY"
     key = (4, 0, 3, 5, 2, 1, 6)
