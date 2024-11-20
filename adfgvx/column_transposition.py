@@ -1,33 +1,39 @@
 """
-This module contains the functions to perform a column transposition and calculate Chi-squared values
+This module contains the functions to perform a column transposition.
 """
 
-from adfgvx.frequency_analysis import get_letter_frequencies
 
-
-def get_transposition_chi_values(text: str, keys: list[tuple[int, ...]]) -> dict[tuple[int, ...], list[float]]:
-    from util.progress_bar import print_progress_bar as pb
+def get_original_transposition(text: str, key_length: int) -> tuple[str, list[float], tuple[int, ...]]:
+    from adfgvx.frequency_analysis import get_ngram_frequencies
+    from adfgvx.frequency_analysis import chi_squared
     from util.letter_frequency_table import tables
+    import itertools
     """
-    Transpose the text using the keys and calculate 
+    Calculates all column transpositions and returns the best result using chi-squared analysis.
+    We know there will be 1 transposition that stands out by having at most 26 different characters.
+    Chi-squared analysis will return infinity for more than 26 characters and we will skip these transpositions.
 
     :param text: the text to be transposed
-    :param keys: the list of key orders
-    :return: the key orders with their corresponding chi-squared values
+    :param key_length: the length of the key
+    :return: the original transposition and the chi-squared values
     """
-    transpositions = {}
-    for iteration, key in enumerate(keys):
-        # Get transposition
-        transposed = reverse_transpose(text, key)
-        # Calculate Frequencies
-        frequencies = get_letter_frequencies(transposed)
-        # Calculate Chi-Squared value
-        chi_values = [get_xi_squared_value(frequencies, table) for table in tables]
-        transpositions[key] = chi_values
-        if iteration % 10000 == 0:
-            pb(iteration, len(keys))
-    return transpositions
-
+    for i in range(1, key_length + 1):
+        print(f"Calculating transpositions for key length {i}.")
+        keys = list(itertools.permutations(range(i)))
+        # Calculate transpositions
+        for key in keys:
+            key = (3, 1, 6, 8, 4, 2, 5, 0, 7)
+            # Get transposition
+            transposed = reverse_transpose(text, key)
+            # Get frequencies of text
+            frequencies = get_ngram_frequencies(transposed, 1)
+            # Calculate chi-squared value
+            chi = [chi_squared(frequencies, table) for table in tables]
+            # Add to transpositions if chi-squared value is not infinite
+            if not any([c == float('inf') for c in chi]):
+                # Return transposed text and chi-squared values
+                return transposed, chi, key
+    raise ValueError('No transpositions found for length: ' + str(key_length))
 
 def reverse_transpose(text, key: tuple[int, ...]) -> str:
     """
@@ -60,15 +66,3 @@ def reverse_transpose(text, key: tuple[int, ...]) -> str:
             if i < len(transposed_list[j]):
                 transposed.append(transposed_list[j][i])
     return ''.join(transposed)
-
-
-def get_xi_squared_value(frequencies, expected_frequencies) -> float:
-    """
-    Get the xi squared value of two frequency dictionaries
-
-    :param frequencies: The frequencies
-    :param expected_frequencies: The expected frequencies
-    :return: The xi squared value
-    """
-    xi_squared = sum(((observed - expected) ** 2) / expected for observed, expected in zip(frequencies.values(), expected_frequencies.values()))
-    return xi_squared
