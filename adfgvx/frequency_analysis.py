@@ -112,3 +112,30 @@ def substitute(text: list[str], frequencies: dict[str, float], language: dict[st
         for j in range(len(text)):
             if text[j] == list(frequencies.keys())[i]:
                 text[j] = letter
+    """ 
+    VERY LIKELY CORRECT: e
+        ea 79 times
+        es 60 times
+        le 51 times
+        eo 40 times
+        ed 34 times
+        el 30 times
+        li 26 times
+        et 26 times
+        de 25 times
+        du 24 times
+        em 24 times
+    """
+
+    # # Think s and a may be switched
+    # for j in range(len(text)):
+    #     if text[j] == 's':
+    #         text[j] = 'a'
+    #     elif text[j] == 'a':
+    #         text[j] = 's'
+    # # Think a and n may be switched
+    # for j in range(len(text)):
+    #     if text[j] == 'a':
+    #         text[j] = 'n'
+    #     elif text[j] == 'n':
+    #         text[j] = 'a'
