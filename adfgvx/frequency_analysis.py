@@ -4,7 +4,7 @@ This file contains the functions to perform frequency analysis on a text.
 import itertools
 
 
-def get_ngram_frequencies(text, n) -> dict[str, float]:
+def get_frequencies(text) -> dict[str, float]:
     from collections import Counter
     """
     Get the letter combination frequencies of some text.
@@ -12,9 +12,9 @@ def get_ngram_frequencies(text, n) -> dict[str, float]:
     :param text: The text
     :return: The letter frequencies
     """
-    assert len(text) % 2 * n == 0, "Text length must be even"
+    assert len(text) % 2 == 0, "Text length must be even"
 
-    ngram_counts = Counter(text[i:i + 2 * n] for i in range(0, len(text) - 1, 2 * n))
+    ngram_counts = Counter(text[i:i + 2] for i in range(0, len(text) - 1, 2))
     total = sum(ngram_counts.values())
 
     sorted_bigrams = sorted(ngram_counts.items(), key=lambda x: x[1], reverse=True)
@@ -41,7 +41,7 @@ def chi_squared(frequencies: dict[str, float], language: dict[str, float]) -> fl
     return round(sum_chi, 2)
 
 
-def frequency_analysis(data_old: str, data_new: str, chi: list[float], key: tuple[int, ...], n_gram: int) -> str:
+def frequency_analysis(data_old: str, data_new: str, chi: list[float], key: tuple[int, ...]) -> str:
     from util.letter_frequency_table import tables, tables_names
     """
     Perform frequency analysis on the text.
@@ -50,14 +50,13 @@ def frequency_analysis(data_old: str, data_new: str, chi: list[float], key: tupl
     :param data_new: the text after transposition
     :param chi: the chi-squared values for each language
     :param key: the key used for transposition
-    :param n_gram: how long 
     :return:
     """
     # Print the text, frequencies of the text and frequencies of the closest language.
     print("Key found: " + str(key))
     print("Original Text: " + data_old)
     print("Text: " + data_new)
-    frequencies = get_ngram_frequencies(data_new, n_gram)
+    frequencies = get_frequencies(data_new)
     print("Frequencies: " + str(frequencies))
     lowest = 0
     for i in range(len(chi)):

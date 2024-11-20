@@ -20,7 +20,7 @@ def solve_adfgvx(path: str, key_length: int) -> str:
         print(e)
         return ""
     # Frequency analysis
-    result = frequency_analysis(data, new_data, chi, key, 1)
+    result = frequency_analysis(data, new_data, chi, key)
     return result
 
 

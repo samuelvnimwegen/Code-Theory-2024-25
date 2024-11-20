@@ -4,7 +4,7 @@ This module contains the functions to perform a column transposition.
 
 
 def get_original_transposition(text: str, key_length: int) -> tuple[str, list[float], tuple[int, ...]]:
-    from adfgvx.frequency_analysis import get_ngram_frequencies
+    from adfgvx.frequency_analysis import get_frequencies
     from adfgvx.frequency_analysis import chi_squared
     from util.letter_frequency_table import tables
     import itertools
@@ -26,7 +26,7 @@ def get_original_transposition(text: str, key_length: int) -> tuple[str, list[fl
             # Get transposition
             transposed = reverse_transpose(text, key)
             # Get frequencies of text
-            frequencies = get_ngram_frequencies(transposed, 1)
+            frequencies = get_frequencies(transposed)
             # Calculate chi-squared value
             chi = [chi_squared(frequencies, table) for table in tables]
             # Add to transpositions if chi-squared value is not infinite
