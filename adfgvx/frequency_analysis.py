@@ -68,6 +68,7 @@ def frequency_analysis(data_old: str, data_new: str, chi: list[float], key: tupl
     text = [data_new[i:i + 2] for i in range(0, len(data_new), 2)]
     # Substitute the letters with the letters from the language with similar frequencies.
     substitute(text, frequencies, tables[lowest])
+    text_substituted = text.copy()
     print("Options:")
     print("\"X Y\" - swaps X with Y")
     print("\"Exit\" - exits the frequency analysis")
@@ -80,10 +81,7 @@ def frequency_analysis(data_old: str, data_new: str, chi: list[float], key: tupl
         if choice == "Exit":
             return ''.join(text)
         if choice == "Reset":
-            text = data_new
-            text = [text[i:i + 2] for i in range(0, len(text), 2)]
-            # Substitution
-            substitute(text, frequencies, tables[lowest])
+            text = text_substituted.copy()
             continue
         # Check if the choice is valid.
         if len(choice) != 3 or choice[1] != ' ' or choice[0] not in alphabet or choice[2] not in alphabet:
