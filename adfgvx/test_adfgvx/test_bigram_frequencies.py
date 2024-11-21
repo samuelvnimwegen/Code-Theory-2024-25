@@ -2,7 +2,7 @@
 This file contains the tests for the bigram_frequencies module.
 """
 
-from adfgvx.frequency_analysis import get_frequencies as get_letter_frequencies
+from adfgvx.frequency_analysis import get_frequencies
 
 
 def test_frequencies1():
@@ -10,7 +10,7 @@ def test_frequencies1():
     expected = {"He": round(100 * 1/7, 2), "ll": round(100 * 1/7, 2), "o,": round(100 * 1/7, 2),
                 " W": round(100 * 1/7, 2), "or": round(100 * 1/7, 2), "ld": round(100 * 1/7, 2),
                 "!!": round(100 * 1/7, 2)}
-    result = get_ngram_frequencies(text)
+    result = get_frequencies(text)
     assert result == expected, f"Expected {expected} but got {result}"
 
 
@@ -23,5 +23,5 @@ def test_frequencies2():
                 "VD": round(100 * 1/23, 2), "DD": round(100 * 1/23, 2), "GV": round(100 * 2/23, 2),
                 "DF": round(100 * 1/23, 2), "DX": round(100 * 2/23, 2), "AX": round(100 * 3/23, 2),
                 "FD": round(100 * 1/23, 2), "GG": round(100 * 1/23, 2)}
-    result = get_ngram_frequencies(text)
+    result = get_frequencies(text)
     assert result == expected, f"Expected {expected} but got {result}"
