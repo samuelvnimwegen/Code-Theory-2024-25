@@ -41,11 +41,11 @@ class EnigmaSolver:
         i = 0
         total_results = []
         for rotor_configuration in rotor_configurations:
-            print("Now trying rotor configuration:", i)
+            print("Now trying rotor choice:", i + 1, "out of", 60)
             print_progress_bar(i, 60)
             rotor1, rotor2, rotor3 = rotor_configuration
 
-            results: list = enigma_matrix.try_rotor_configuration(rotor1, rotor2, rotor3, self.reflector)
+            results: list = enigma_matrix.try_rotor_choice(rotor1, rotor2, rotor3, self.reflector)
             if len(results) > 0:
                 print(f"{rotor1} {rotor2} {rotor3}")
                 total_results += results

@@ -183,9 +183,9 @@ def test_try_rotor_configuration_default():
     encrypted_text = test_e_m.encrypt_text("DEOPGAVEVOORENIGMA")
     assert encrypted_text == "KFUIYUYXIBVEJPDJSX"
 
-    assert enigma_matrix.try_rotor_configuration("AJDKSIRUXBLHWTMCQGZNPYFVOE", "EKMFLGDQVZNTOWYHXUSPAIBRCJ",
-                                                 "BDFHJLCPRTXVZNYEIWGAKMUSQO", "YRUHQSLDPXNGOKMIEBFZCWVJAT",
-                                                 insta_return=True)
+    assert enigma_matrix.try_rotor_choice("AJDKSIRUXBLHWTMCQGZNPYFVOE", "EKMFLGDQVZNTOWYHXUSPAIBRCJ",
+                                          "BDFHJLCPRTXVZNYEIWGAKMUSQO", "YRUHQSLDPXNGOKMIEBFZCWVJAT",
+                                          insta_return=True)
 
 
 def test_try_rotor_configuration_custom_plugboard():
@@ -206,9 +206,9 @@ def test_try_rotor_configuration_custom_plugboard():
     assert encrypted_text == "VFSTJGYUFHDPSKHDIC"
 
     # Check if the rotor configuration is valid
-    assert enigma_matrix.try_rotor_configuration("AJDKSIRUXBLHWTMCQGZNPYFVOE", "EKMFLGDQVZNTOWYHXUSPAIBRCJ",
-                                                 "BDFHJLCPRTXVZNYEIWGAKMUSQO", "YRUHQSLDPXNGOKMIEBFZCWVJAT",
-                                                 insta_return=True)
+    assert enigma_matrix.try_rotor_choice("AJDKSIRUXBLHWTMCQGZNPYFVOE", "EKMFLGDQVZNTOWYHXUSPAIBRCJ",
+                                          "BDFHJLCPRTXVZNYEIWGAKMUSQO", "YRUHQSLDPXNGOKMIEBFZCWVJAT",
+                                          insta_return=True)
 
 
 def test_try_rotor_configuration_custom_rotors():
@@ -229,12 +229,12 @@ def test_try_rotor_configuration_custom_rotors():
     assert encrypted_text == "EYLLTKORSUXVWLMHGX"
 
     # Check if the rotor configuration is valid
-    assert enigma_matrix.try_rotor_configuration("AJDKSIRUXBLHWTMCQGZNPYFVOE", "EKMFLGDQVZNTOWYHXUSPAIBRCJ",
-                                                 "BDFHJLCPRTXVZNYEIWGAKMUSQO", "YRUHQSLDPXNGOKMIEBFZCWVJAT",
-                                                 insta_return=True)
+    assert enigma_matrix.try_rotor_choice("AJDKSIRUXBLHWTMCQGZNPYFVOE", "EKMFLGDQVZNTOWYHXUSPAIBRCJ",
+                                          "BDFHJLCPRTXVZNYEIWGAKMUSQO", "YRUHQSLDPXNGOKMIEBFZCWVJAT",
+                                          insta_return=True)
 
 
-def test_try_rotor_configuration_custom():
+def test_try_rotor_choice_custom():
     """
     This function tests the try_rotor_configuration method.
     This test is for a custom configuration with a custom plugboard
@@ -252,9 +252,9 @@ def test_try_rotor_configuration_custom():
     assert encrypted_text == "EHXIRPCCPMUYYSLHCN"
 
     # Check if the rotor configuration is valid
-    assert enigma_matrix.try_rotor_configuration("AJDKSIRUXBLHWTMCQGZNPYFVOE", "EKMFLGDQVZNTOWYHXUSPAIBRCJ",
-                                                 "BDFHJLCPRTXVZNYEIWGAKMUSQO", "YRUHQSLDPXNGOKMIEBFZCWVJAT",
-                                                 insta_return=True)
+    assert enigma_matrix.try_rotor_choice("AJDKSIRUXBLHWTMCQGZNPYFVOE", "EKMFLGDQVZNTOWYHXUSPAIBRCJ",
+                                          "BDFHJLCPRTXVZNYEIWGAKMUSQO", "YRUHQSLDPXNGOKMIEBFZCWVJAT",
+                                          insta_return=True)
 
 
 def test_return_configuration():
