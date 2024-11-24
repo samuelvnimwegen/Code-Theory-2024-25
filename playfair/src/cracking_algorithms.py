@@ -7,6 +7,7 @@ from playfair.src.playfair import Playfair, generate_random_Playfair_matrix, cre
 
 
 def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
+                        output_file: str,
                         attempts: int = 1024,
                         temperature: float = 0.5, cooling_rate: float = 0.003,
                         restart_patience=256, start_key: None|str=None) -> (Playfair, float, str):
@@ -24,8 +25,11 @@ def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
     :param scoring_fn: the scoring function
     :param stop_score: stop algorithm after reaching better result than this score (better result = smaller than)
     :param start_key: possible starting key
+    :param output_file: the output file to where the progress should be sent
     :return: the best key, with its score and used language
     """
+    print_start(output_file)
+
     # Get the start time
     start_time = datetime.now().timestamp()
 
@@ -49,19 +53,9 @@ def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
     try:
         #for index in range(attempts):
         # Changed the algorithm: instead of trying max attempts, go find answer: answer might be good if score is lower than 0.35
-        while best_score < stop_score:
-        #while best_score < 0.99:  # Value to make it run indefinitely
-            if index % 10000 == 0:
-                # Every 10 000 attempts, check if we have passed the hour mark
-                current_time = datetime.now().timestamp()
-                passed_time_seconds = current_time - start_time
-                hours, remainder = divmod(passed_time_seconds, 3600)
-                minutes, seconds = divmod(remainder, 60)
-                print(f"Current elapsed time at index {index}: {hours}:{minutes}:{seconds} - current score: {best_score*100} %")
-                # if passed_time_seconds > 3600:
-                #     print("The algorithm has passed the one hour mark")
-                #     raise KeyboardInterrupt
 
+        while best_score < stop_score:
+        #while best_score < 1:  # Value to make it run indefinitely
             # Create new key by altering the current key
             alternated_key: Playfair = create_random_modified_matrix(current_key)
             # calculate the score
@@ -95,6 +89,8 @@ def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
                     best_key_language = current_language
                     time_since_best = 0
 
+                    print_progress(output_file, index, start_time, best_key, ciphertext, best_score)
+
                 else:
                     time_since_best += 1
                     if time_since_best > restart_patience:
@@ -110,11 +106,64 @@ def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
     except KeyboardInterrupt:
         end_time = datetime.now().timestamp()
         elapsed_time = end_time - start_time
-        print(index, elapsed_time, best_key.keyword, f"{best_score*100}%", "Algorithm stopped/interrupted")
+
+        myPrint("-------------------------------------------------------------------------------------", output_file)
+        myPrint("Algorithm Stopped/interrupted", output_file)
+        print_progress(output_file, index, start_time, best_key, ciphertext, best_score)
+        return best_key, best_score, best_key_language, elapsed_time
 
     end_time = datetime.now().timestamp()
     elapsed_time = end_time - start_time
 
-    print(index, elapsed_time, best_key.keyword, f"{best_score * 100}%", "Algorithm finished")
+    myPrint("-------------------------------------------------------------------------------------", output_file)
+    myPrint("Algorithm Finished", output_file)
+    print_progress(output_file, index, start_time, best_key, ciphertext, best_score)
     return best_key, best_score, best_key_language, elapsed_time
+
+
+def print_progress(filename: str, index: int, start_time: float, key: Playfair, decrypt_text: str, score: float):
+    """
+    Print the current progress
+    """
+    print_str = f"{index}\t\t"
+
+    # Time needed
+    current_time = datetime.now().timestamp()
+    passed_time_seconds = current_time - start_time
+    hours, remainder = divmod(passed_time_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    print_str += f"{hours}:{minutes}:{seconds}\t"
+
+    # Key used
+    key_word = key.matrix_obj.get_matrix_as_string()
+    print_str += f"{key_word}\t"
+
+    # Start from resulting plaintext
+    plaintext = key.decrypt(decrypt_text)
+    print_str += f"{plaintext[:40]}...\t"
+
+    # Score
+    percentage = 100 * score
+    print_str += f"{percentage}%"
+
+    myPrint(print_str, filename)
+
+
+def print_start(filename: str):
+    """
+    Print the start line of file
+    """
+    myPrint("Index\t\t|Time Needed\t\t\t\t|Key\t\t\t\t\t\t|Plaintext\t\t\t\t\t\t\t\t|Score", filename)
+
+
+def myPrint(text: str, filename: str):
+    """
+    Print to file and console
+    """
+
+    with open(filename, 'a') as file:
+        file.write(text + '\n')
+
+    file.close()
+    print(text)
 
