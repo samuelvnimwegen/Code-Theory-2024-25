@@ -6,9 +6,9 @@ from playfair.src.utils import preconditions, playfair_methods
 
 
 class Playfair:
-    def __init__(self, keyword: str):
+    def __init__(self, keyword: str, matrix_size=25):
         self.keyword = keyword.upper()
-        self.matrix_obj = PlayfairMatrix(keyword)
+        self.matrix_obj = PlayfairMatrix(keyword, matrix_size)
 
     def encrypt(self, plaintext: str) -> str:
         """
@@ -92,11 +92,13 @@ def create_random_modified_matrix(parent_matrix: Playfair) -> Playfair:
     :param parent_matrix: the matrix to modify
     :return: playfair modified matrix
     """
-    parent_key = copy(parent_matrix.keyword)
+    key = parent_matrix.matrix_obj.get_matrix_as_string()
 
     # Get 2 random letter positions in keyword and swap them
-    pos1, pos2 = random.sample(range(25), 2)
-    new_key = playfair_methods.swap_two_letters(parent_key, pos1, pos2)
+    key_length = pow(parent_matrix.matrix_obj.matrix_size_sqrt, 2)
+    pos1, pos2 = random.sample(range(key_length), 2)
+
+    new_key = playfair_methods.swap_two_letters(key, pos1, pos2)
 
     return Playfair(new_key)
 

@@ -3,6 +3,7 @@ from collections import Counter
 from playfair.src.language_info.letter_frequency_table import *
 from playfair.src.language_info.most_common_words import *
 from playfair.src.playfair import Playfair
+from playfair.src.utils.utils import norm_2
 
 # Scoring algorithms to give a score to a decrypted text
 
@@ -100,7 +101,7 @@ def score_weighted_average(cipher_text: str, cipher_obj: Playfair) -> (str, floa
     return first_item
 
 
-def score_trigrams_count(cipher_text: str, cipher_obj: Playfair) -> (str, int):
+def score_trigrams_count(cipher_text: str, cipher_obj: Playfair) -> (str, float):
     """
     Split the text in trigrams (triples) and count how many times each trigram appears.
     Each extra HIT (excl: 1 for presence) is counted in score.
@@ -147,12 +148,13 @@ def score_trigrams_count(cipher_text: str, cipher_obj: Playfair) -> (str, int):
     return "no_language", percentage_score
 
 
-def score_three_letter_patterns(cipher_text: str, cipher_obj: Playfair, decrypt_text=True) -> (str, int):
+def score_three_letter_patterns(cipher_text: str, cipher_obj: Playfair, decrypt_text=True) -> (str, float):
     """
     Decrypt the text using the cipher object.
     Find all three letter patterns in the decrypted text and count there appearance (if more than 1)
     :param cipher_text: Text to decrypt
     :param cipher_obj: Cipher object to decrypt the text (contains keyword)
+    :param decrypt_text: boolean value if the text needs to be decrypted first
     :return: A percentage value of all appearances relative to the length of the text
     """
     text_to_score = cipher_text
@@ -171,6 +173,48 @@ def score_three_letter_patterns(cipher_text: str, cipher_obj: Playfair, decrypt_
     text_length = len(text_no_x)
     percentage = total_patterns / text_length
     return "no_language", percentage
+
+
+def score_frequencies_english(cipher_text: str, cipher_obj: Playfair, decrypt_text=True) -> (str, float):
+    """
+    After meeting with Mr. Symens -> Plaintext is in English
+    Frequencies are best scoring method
+    :param cipher_text: Text to decrypt
+    :param cipher_obj: Cipher object to decrypt the text (contains keyword)
+    :param decrypt_text: boolean value if the text needs to be decrypted first
+    :return: negative of score: better score is higher than worse scores
+    """
+    text_to_score = cipher_text
+    if decrypt_text:
+        text_to_score = cipher_obj.decrypt(cipher_text)
+
+    # Remove all X values (there could be actual X's in the plain text, but low frequency)
+    text_no_x = text_to_score.upper().replace("X", "")
+
+    language = "EN"
+    frequencies = languages[language][0]
+
+    # Take for each letter the difference between the text frequency and the expected frequency
+    letter_frequency_diff = []
+    for letter in frequencies.keys():
+        if letter == 'X' or letter == 'J':
+            continue
+        letter_count = text_no_x.count(letter)
+        text_frequency = letter_count / (len(text_no_x))
+        expected_frequency = frequencies[letter] / 100   # Divide by 100 to change percentage value to decimal value (0,100) range
+        letter_frequency_diff.append(text_frequency - expected_frequency)
+
+    # Take the second norm of the vector
+    norm = norm_2(letter_frequency_diff)
+
+    # Take difference from 1, so that better scores are higher than worse scores
+    return "EN", 1-norm
+
+
+
+
+
+
 
 
 

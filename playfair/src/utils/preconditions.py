@@ -1,3 +1,5 @@
+import math
+
 
 def text_only_alphabet(text: str) -> bool:
     """
@@ -35,6 +37,13 @@ def no_spaces_in_text(text: str) -> bool:
     :return: true/false
     """
     return ' ' not in text
+
+
+def is_perfect_square(n: int) -> bool:
+    if n < 0:
+        return False
+    sqrt_n = int(math.sqrt(n))
+    return sqrt_n * sqrt_n == n
 
 
 

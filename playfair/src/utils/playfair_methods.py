@@ -1,6 +1,6 @@
 import copy
-
 from playfair.src.playfair_matrix import PlayfairMatrix
+
 
 def replace_J_with_I(text: str) -> str:
     replace_string = ""
@@ -65,8 +65,8 @@ def replace_pairs(letter_1: str, letter_2: str, matrix: PlayfairMatrix, encrypti
     if row_l1 == row_l2:
         # Both letters in same row
         # Go both one step right
-        new_col_l1 = (col_l1 + dx) % 5
-        new_col_l2 = (col_l2 + dx) % 5
+        new_col_l1 = (col_l1 + dx) % matrix.matrix_size_sqrt
+        new_col_l2 = (col_l2 + dx) % matrix.matrix_size_sqrt
 
         new_letter1 = matrix.get_letter(row_l1, new_col_l1)
         new_letter2 = matrix.get_letter(row_l2, new_col_l2)
@@ -75,8 +75,8 @@ def replace_pairs(letter_1: str, letter_2: str, matrix: PlayfairMatrix, encrypti
     if col_l1 == col_l2:
         # Both letters in same column
         # Go both one step down
-        new_row_l1 = (row_l1 + dx) % 5
-        new_row_l2 = (row_l2 + dx) % 5
+        new_row_l1 = (row_l1 + dx) % matrix.matrix_size_sqrt
+        new_row_l2 = (row_l2 + dx) % matrix.matrix_size_sqrt
 
         new_letter1 = matrix.get_letter(new_row_l1, col_l1)
         new_letter2 = matrix.get_letter(new_row_l2, col_l2)
