@@ -22,16 +22,17 @@ def get_original_transposition(text: str, key_length: int) -> tuple[str, list[fl
         keys = list(itertools.permutations(range(i)))
         # Calculate transpositions
         for key in keys:
+            # key = (3, 1, 6, 8, 4, 2, 5, 0, 7)
             # Get transposition
-            transposed = reverse_transpose(text, key)
+            normal = reverse_transpose(text, key)
             # Get frequencies of text
-            frequencies = get_frequencies(transposed)
+            frequencies = get_frequencies(normal)
             # Calculate chi-squared value
             chi = [chi_squared(frequencies, table) for table in tables]
             # Add to transpositions if chi-squared value is not infinite
             if not any([c == float('inf') for c in chi]):
-                # Return transposed text and chi-squared values
-                return transposed, chi, key
+                # Return normal text and chi-squared values
+                return normal, chi, key
     raise ValueError('No transpositions found for length: ' + str(key_length))
 
 def reverse_transpose(text, key: tuple[int, ...]) -> str:
