@@ -1,7 +1,6 @@
 """
 This file contains the functions to perform frequency analysis on a text.
 """
-import itertools
 
 
 def get_frequencies(text) -> dict[str, float]:
@@ -21,17 +20,40 @@ def get_frequencies(text) -> dict[str, float]:
     return {k: round(100 * v / total, 2) for k, v in sorted_bigrams}
 
 
-def chi_squared(frequencies: dict[str, float], language: dict[str, float]) -> float:
+def get_frequencies_ngrams(text: list[str], n: int) -> dict[str, float]:
+    """
+    Get the n-grams of the text.
+
+    :param text: the text
+    :param n: the n
+    :return: the n-grams
+    """
+    ngrams = dict()
+    for i in range(len(text) - n + 1):
+        ngram = text[i:i + n]
+        ngram = ''.join(ngram)
+        if ngram in ngrams:
+            ngrams[ngram] += 1
+        else:
+            ngrams[ngram] = 1
+    total = sum(ngrams.values())
+    # Return the percentages, sorted
+    return {k: round(100 * v / total, 2) for k, v in sorted(ngrams.items(), key=lambda x: x[1], reverse=True)}
+
+
+def chi_squared(frequencies: dict[str, float], language: dict[str, float], monogram=True) -> float:
     """
     Calculate the chi-squared value for the frequencies of the text and the frequencies of a language.
 
     :param frequencies: The frequencies of the text
     :param language: The frequencies of the language
+    :param monogram: Whether we are looking at monograms or not.
     :return: The chi-squared value
     """
     # No numbers in text.
-    if len(frequencies) > 26:
-        return float('inf')
+    if monogram:
+        if len(frequencies) > 26:
+            return float('inf')
     # letter differs in frequencies and language
     sum_chi = float(0)
     for i in range(len(frequencies)):
@@ -58,17 +80,20 @@ def frequency_analysis(data_old: str, data_new: str, chi: list[float], key: tupl
     print("Text: " + data_new)
     frequencies = get_frequencies(data_new)
     print("Frequencies: " + str(frequencies))
-    lowest = 0
+    language = 0
     for i in range(len(chi)):
-        if chi[i] < chi[lowest]:
-            lowest = i
-    print("Language: " + str(tables[lowest]))
-    print("Language Selected: " + tables_names[lowest])
+        if chi[i] < chi[language]:
+            language = i
+    print("Language: " + str(tables[language]))
+    print("Language Selected: " + tables_names[language])
     # Split letters into pairs of 2
     text = [data_new[i:i + 2] for i in range(0, len(data_new), 2)]
     # Substitute the letters with the letters from the language with similar frequencies.
-    substitute(text, frequencies, tables[lowest])
-    text_substituted = text.copy()
+    substitute_monogram(text, frequencies, tables[language])
+    # Perform n-gram analysis.
+    ngram_analysis(text, 2, language)
+    # Save this text.
+    new_text = text.copy()
     print("Options:")
     print("\"X Y\" - swaps X with Y")
     print("\"Exit\" - exits the frequency analysis")
@@ -81,7 +106,7 @@ def frequency_analysis(data_old: str, data_new: str, chi: list[float], key: tupl
         if choice == "Exit":
             return ''.join(text)
         if choice == "Reset":
-            text = text_substituted.copy()
+            text = new_text.copy()
             continue
         # Check if the choice is valid.
         if len(choice) != 3 or choice[1] != ' ' or choice[0] not in alphabet or choice[2] not in alphabet:
@@ -98,7 +123,7 @@ def frequency_analysis(data_old: str, data_new: str, chi: list[float], key: tupl
                 text[i] = choice[0]
 
 
-def substitute(text: list[str], frequencies: dict[str, float], language: dict[str, float]):
+def substitute_monogram(text: list[str], frequencies: dict[str, float], language: dict[str, float]):
     """
     Substitute the monograms in the text.
 
@@ -112,30 +137,68 @@ def substitute(text: list[str], frequencies: dict[str, float], language: dict[st
         for j in range(len(text)):
             if text[j] == list(frequencies.keys())[i]:
                 text[j] = letter
-    """ 
-    VERY LIKELY CORRECT: e
-        ea 79 times
-        es 60 times
-        le 51 times
-        eo 40 times
-        ed 34 times
-        el 30 times
-        li 26 times
-        et 26 times
-        de 25 times
-        du 24 times
-        em 24 times
-    """
 
-    # # Think s and a may be switched
-    # for j in range(len(text)):
-    #     if text[j] == 's':
-    #         text[j] = 'a'
-    #     elif text[j] == 'a':
-    #         text[j] = 's'
-    # # Think a and n may be switched
-    # for j in range(len(text)):
-    #     if text[j] == 'a':
-    #         text[j] = 'n'
-    #     elif text[j] == 'n':
-    #         text[j] = 'a'
+
+def substitute(text: list[str], a: str, b: str):
+    """
+    Substitute a with b in the text.
+
+    :param text: the text
+    :param a: the letter to substitute
+    :param b: the letter to substitute with
+    """
+    for i in range(len(text)):
+        if text[i] == a:
+            text[i] = b
+        elif text[i] == b:
+            text[i] = a
+
+
+def ngram_analysis(text: list[str], n: int, language: int):
+    from util.bigram_frequency_table import tables as bigrams
+    assert language < len(bigrams)
+    """
+    Frequency analysis using ngrams
+
+    :param text: the text
+    :param n: the n
+    :param language: the index of the language
+    :return:
+    """
+    if n == 1:
+        return
+    ngrams = get_frequencies_ngrams(text, n)
+    match n:
+        case 2:
+            letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+            # Substitute letters using hill climbing
+            for i in range(len(ngrams)):
+                ...
+            # copy_bigrams = copy.deepcopy(bigrams)
+            # letters = []
+            # for i in range(len(ngrams)):
+            #     # Get ngram from text
+            #     ngram1 = list(ngrams.keys())[i]
+            #     for j in range(len(copy_bigrams)):
+            #         ngram2 = list(bigrams[language].keys())[j]
+            #         # Check if the letters in n-gram correspond
+            #         num1 = []
+            #         num2 = []
+            #         l1 = []
+            #         l2 = []
+            #         for k in range(len(ngram1)):
+            #             # Index the letters so they'll be mapped together
+            #             if ngram1[k] not in num1:
+            #                 num1.append(ngram1[k])
+            #             if ngram2[k] not in num2:
+            #                 num2.append(ngram2[k])
+            #             # Add index to list
+            #             l1.append(num1.index(ngram1[k]))
+            #             l2.append(num2.index(ngram2[k]))
+            #         # If they are not the same that means we cannot substitute between them
+            #         # For example "ab" and "aa" or "aee" and "eae"
+            #         if l1 != l2:
+            #             continue
+            #         ...
+        case _:
+            raise NotImplementedError("{}-grams are not (yet) supported!".format(n))

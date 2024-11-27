@@ -128,3 +128,7 @@ get_frequencies("util/bigram_frequencies/english.txt", bigram_frequencies_en)
 get_frequencies("util/bigram_frequencies/french.txt", bigram_frequencies_fr)
 get_frequencies("util/bigram_frequencies/german.txt", bigram_frequencies_de)
 get_frequencies("util/bigram_frequencies/spanish.txt", bigram_frequencies_es)
+
+tables = [bigram_frequencies_en, bigram_frequencies_fr,
+          bigram_frequencies_de, bigram_frequencies_nl,
+          bigram_frequencies_es, bigram_frequencies_it]
