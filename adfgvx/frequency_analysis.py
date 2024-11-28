@@ -173,16 +173,22 @@ def ngram_analysis(text: list[str], n: int, language: int):
     while n > 1:
         # Get expected bigrams
         get_expected_ngrams(language, n, expected_frequencies)
+        # If frequencies found, break loop
         if len(expected_frequencies) != 0:
             break
         # If returned frequencies are empty, decrease n
         if len(expected_frequencies) == 0:
             n -= 1
             continue
+    # No frequencies found so return
     if len(expected_frequencies) == 0:
         return
-    # Simulated annealing
-    ...
+    expected_frequencies = dict(list(expected_frequencies.items())[0:15])
+    print("Expected frequencies of n-grams:" + str(expected_frequencies))
+    frequencies = get_frequencies_ngrams(text, n)
+    frequencies = dict(list(frequencies.items())[0:15])
+    print("Frequencies of n-grams:" + str(frequencies))
+
     # match n:
     #     case 2:
     #         frequencies = dict[str, float]()
