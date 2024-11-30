@@ -33,12 +33,13 @@ if __name__ == '__main__':
     text_to_crack = get_file_content('codes/02-OPGAVE-playfair.txt')
     output_file = "playfair/results/big_loop/"
 
-    # Latest run was disrupted, but looked like promising result
-    promising_key = "SHLTUFRWNIKBZGYMQPCXEDOAV"
-    cracking(text_to_crack, output_file, start_key=promising_key)
+    # # Latest run was disrupted, but looked like promising result
+    # promising_key = "SHLTUFRWNIKBZGYMQPCXEDOAV"
+    # cracking(text_to_crack, output_file, start_key=promising_key)
 
-    # for i in range(15):
-    #     cracking(text_to_crack, output_file)
+    n = 1
+    for i in range(n):
+        cracking(text_to_crack, output_file)
 
 
 

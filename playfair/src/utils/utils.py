@@ -50,3 +50,12 @@ def norm_2(vector: list[int|float]) -> float:
 
     return sqrt(squares)
 
+
+def remove_letters_x(text: str) -> str:
+    """
+    Remove all the letters X of the text and return back in upper case
+    :param text: text with(out) X's
+    :return: text without X's in uppercase
+    """
+    return text.upper().replace('X', '')
+

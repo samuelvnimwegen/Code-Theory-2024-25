@@ -4,7 +4,7 @@ from math import log10
 from playfair.src.language_info.letter_frequency_table import *
 from playfair.src.language_info.most_common_words import *
 from playfair.src.playfair import Playfair
-from playfair.src.utils.utils import norm_2
+from playfair.src.utils.utils import norm_2, remove_letters_x
 from playfair.src.language_info.utils_4gram_EN import binary_search_4grams, total_4grams
 from playfair.src.language_info.letter_freq_table_playfair import ENGLISH_PLAYFAIR
 
@@ -165,7 +165,7 @@ def score_three_letter_patterns(cipher_text: str, cipher_obj: Playfair, decrypt_
         text_to_score = cipher_obj.decrypt(cipher_text)
 
     # Remove all X values (there could be actual X's in the plain text, but low frequency)
-    text_no_x = text_to_score.replace("X", "")
+    text_no_x = remove_letters_x(text_to_score)
 
     # use sliding window to find all three character substrings and count each
     three_letter_counts = Counter(text_no_x[i:i+3] for i in range(len(text_no_x) - 2))
@@ -193,7 +193,7 @@ def score_frequencies_english(cipher_text: str, cipher_obj: Playfair, decrypt_te
 
     # Remove all X values (there could be actual X's in the plain text, but low frequency)
     # The X frequency is removed from the letter frequencies
-    text_no_x = text_to_score.upper().replace("X", "")
+    text_no_x = remove_letters_x(text_to_score)
 
     # Take for each letter the difference between the text frequency and the expected frequency
     letter_frequency_diff = []
@@ -229,7 +229,7 @@ def score_four_gram_statistics(cipher_text: str, cipher_obj: Playfair, decrypt_t
         text_to_score = cipher_obj.decrypt(cipher_text)
 
     # Remove all X values (there could be actual X's in the plain text, but low frequency)
-    text_no_x = text_to_score.upper().replace("X", "")
+    text_no_x = remove_letters_x(text_to_score)
 
     # Last 3 indices not necessary, as we need 4grams of i, i+1, i+2, i+3
     for index in range(len(text_no_x) - 3):

@@ -3,6 +3,7 @@ from copy import copy
 
 from playfair.src.playfair_matrix import PlayfairMatrix
 from playfair.src.utils import preconditions, playfair_methods
+from playfair.src.utils.utils import remove_letters_x
 
 
 class Playfair:
@@ -44,9 +45,10 @@ class Playfair:
 
     def decrypt(self, ciphertext: str) -> str:
         """
-        Decrypt the ciphertext using Playfair with the keyword in the class object
+        Decrypt the ciphertext using Playfair with the keyword in the class object.
+        All letters X removed from resulting plaintext
         :param ciphertext: text to decrypt
-        :return: plaintext/original text
+        :return: plaintext/original text with no X's in the text
         """
         assert preconditions.text_only_alphabet(ciphertext)
         assert preconditions.text_no_j(ciphertext)
@@ -62,6 +64,9 @@ class Playfair:
             replaced_text += playfair_methods.replace_pairs(letter_1, letter_2, self.matrix_obj, False)
 
         plaintext = replaced_text
+
+        # Remove all X's
+        plaintext = remove_letters_x(plaintext)
 
         # Check some post conditions
         assert preconditions.text_only_alphabet(plaintext)
