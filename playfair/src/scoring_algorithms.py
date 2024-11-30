@@ -1,9 +1,12 @@
 from collections import Counter
+from math import log10
 
 from playfair.src.language_info.letter_frequency_table import *
 from playfair.src.language_info.most_common_words import *
 from playfair.src.playfair import Playfair
 from playfair.src.utils.utils import norm_2
+from playfair.src.language_info.utils_4gram_EN import binary_search_4grams, total_4grams
+from playfair.src.language_info.letter_freq_table_playfair import ENGLISH_PLAYFAIR
 
 # Scoring algorithms to give a score to a decrypted text
 
@@ -182,26 +185,24 @@ def score_frequencies_english(cipher_text: str, cipher_obj: Playfair, decrypt_te
     :param cipher_text: Text to decrypt
     :param cipher_obj: Cipher object to decrypt the text (contains keyword)
     :param decrypt_text: boolean value if the text needs to be decrypted first
-    :return: negative of score: better score is higher than worse scores
+    :return: 1 - score: better score is higher than worse scores
     """
     text_to_score = cipher_text
     if decrypt_text:
         text_to_score = cipher_obj.decrypt(cipher_text)
 
     # Remove all X values (there could be actual X's in the plain text, but low frequency)
+    # The X frequency is removed from the letter frequencies
     text_no_x = text_to_score.upper().replace("X", "")
-
-    language = "EN"
-    frequencies = languages[language][0]
 
     # Take for each letter the difference between the text frequency and the expected frequency
     letter_frequency_diff = []
-    for letter in frequencies.keys():
+    for letter, freq in ENGLISH_PLAYFAIR.items():
         if letter == 'X' or letter == 'J':
             continue
         letter_count = text_no_x.count(letter)
         text_frequency = letter_count / (len(text_no_x))
-        expected_frequency = frequencies[letter] / 100   # Divide by 100 to change percentage value to decimal value (0,100) range
+        expected_frequency = freq   # Divide by 100 to change percentage value to decimal value (0,100) range
         letter_frequency_diff.append(text_frequency - expected_frequency)
 
     # Take the second norm of the vector
@@ -209,6 +210,38 @@ def score_frequencies_english(cipher_text: str, cipher_obj: Playfair, decrypt_te
 
     # Take difference from 1, so that better scores are higher than worse scores
     return "EN", 1-norm
+
+
+def score_four_gram_statistics(cipher_text: str, cipher_obj: Playfair, decrypt_text=True) -> (str, float):
+    """
+    heuristic that uses 4-grams and their statistic probabilities in the English language
+    :param cipher_text: Text to decrypt
+    :param cipher_obj: Cipher object to decrypt the text (contains keyword)
+    :param decrypt_text: boolean value if the text needs to be decrypted first. if False, the cipher text can be interpreted as Plaintext
+    :return: language: str, score: float. The language is definitely English (EN)
+    """
+    # To prevent underflow with small float numbers, we'll work with log10
+    prob_log = 0
+
+    # If needed, decrypt the text
+    text_to_score = cipher_text
+    if decrypt_text:
+        text_to_score = cipher_obj.decrypt(cipher_text)
+
+    # Remove all X values (there could be actual X's in the plain text, but low frequency)
+    text_no_x = text_to_score.upper().replace("X", "")
+
+    # Last 3 indices not necessary, as we need 4grams of i, i+1, i+2, i+3
+    for index in range(len(text_no_x) - 3):
+        four_gram = text_no_x[index:index+4]
+
+        # Get frequency count of the gram and calculate probability in log10
+        count = binary_search_4grams(four_gram)
+        probability = count / total_4grams
+        if probability > 0:
+            prob_log += log10(probability)
+
+    return "EN", prob_log
 
 
 

@@ -6,19 +6,20 @@ import time
 from playfair.src.playfair import Playfair, generate_random_Playfair_matrix, create_random_modified_matrix
 
 
-def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
+def simulated_annealing(ciphertext: str, scoring_fn,
                         output_file: str,
-                        attempts: int = 1024,
+                        transitions: int = 50000,
                         temperature: float = 0.5, cooling_rate: float = 0.003,
                         restart_patience=256, start_key: None|str=None) -> (Playfair, float, str):
     """
     Simulated annealing algorithm to try and crack
 
     :source: https://www.oranlooney.com/post/playfair/
+    https://github.com/damiannolan/simulated-annealing-playfair-cipher-breaker/blob/master/README.md
             https://www.youtube.com/watch?v=5ElAUPABh6U
 
     :param ciphertext: the ciphertext to decrypt
-    :param attempts: maximum amounts to make
+    :param transitions: amounts to make in one loop
     :param temperature: the starting temperature     (values 0.5, 1 have been used in past)
     :param cooling_rate: rate to decrease temperature
     :param restart_patience: the time to restart from the best score known
@@ -48,60 +49,62 @@ def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
     best_key_language = current_language
     time_since_best = 0
 
+    # This is used in other algorithm
+    other_temp = 10
+
     index = 0
     # the simulated annealing algorithm
     try:
-        #for index in range(attempts):
-        # Changed the algorithm: instead of trying max attempts, go find answer: answer might be good if score is lower than 0.35
+        #while temperature > 0.001:
+        for temp in range(other_temp, 0, -1):
+            for trans in range(transitions):
+                # Create new key by altering the current key
+                alternated_key: Playfair = create_random_modified_matrix(current_key)
+                # calculate the score
+                language, score = scoring_fn(ciphertext, alternated_key)
 
-        while best_score < stop_score:
-        #while best_score < 1:  # Value to make it run indefinitely
-            # Create new key by altering the current key
-            alternated_key: Playfair = create_random_modified_matrix(current_key)
-            # calculate the score
-            language, score = scoring_fn(ciphertext, alternated_key)
+                # If score is better, replace current key and go again
+                # if current_score > best_score:
+                #     best_score = current_score
+                #     best_key = current_key
+                #     best_key_language = current_language
+                #     time_since_best = 0
+                #
+                #     continue
 
-            # If score is better, replace current key and go again
-            # if current_score > best_score:
-            #     best_score = current_score
-            #     best_key = current_key
-            #     best_key_language = current_language
-            #     time_since_best = 0
-            #
-            #     continue
+                # If score is worse -> accept with certain probability
+                delta_score = score - current_score
+                #delta_ratio = delta_score / temperature
+                delta_ratio = delta_score / temp
+                if abs(delta_ratio) > 100:
+                    delta_ratio = math.copysign(1, delta_ratio)
+                acceptance_rate = math.exp(delta_ratio)
+                # generate random value between 0 and 1, if value smaller than probability, accept
+                if random() < acceptance_rate:
+                    current_score = score
+                    current_key = alternated_key
+                    current_language = language
 
-            # If score is worse -> accept with certain probability
-            delta_score = score - current_score
-            delta_ratio = delta_score / temperature
-            if abs(delta_ratio) > 100:
-                delta_ratio = math.copysign(1, delta_ratio)
-            acceptance_rate = math.exp(delta_ratio)
-            # generate random value between 0 and 1, if value smaller than probability, accept
-            if random() < acceptance_rate:
-                current_score = score
-                current_key = alternated_key
-                current_language = language
-
-                # If better than best_score, update time to 0, otherwise increase by 1
-                if current_score > best_score:
-                    best_score = current_score
-                    best_key = current_key
-                    best_key_language = current_language
-                    time_since_best = 0
-
-                    print_progress(output_file, index, start_time, best_key, ciphertext, best_score)
-
-                else:
-                    time_since_best += 1
-                    if time_since_best > restart_patience:
+                    # If better than best_score, update time to 0, otherwise increase by 1
+                    if current_score > best_score:
+                        best_score = current_score
+                        best_key = current_key
+                        best_key_language = current_language
                         time_since_best = 0
-                        current_score = best_score
-                        current_key = best_key
-                        current_language = best_key_language
 
-            # at the end, decrease temperature with cooling rate
-            temperature *= 1 - cooling_rate
-            index += 1
+                        print_progress(output_file, index, start_time, best_key, ciphertext, best_score)
+
+                    else:
+                        time_since_best += 1
+                        if time_since_best > restart_patience:
+                            time_since_best = 0
+                            current_score = best_score
+                            current_key = best_key
+                            current_language = best_key_language
+
+                # at the end, decrease temperature with cooling rate
+                temperature *= 1 - cooling_rate
+                index += 1
 
     except KeyboardInterrupt:
         end_time = datetime.now().timestamp()
