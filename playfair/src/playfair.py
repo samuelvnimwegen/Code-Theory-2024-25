@@ -1,6 +1,7 @@
 import random
 from copy import copy
 
+from playfair.src.key_scrambler import KeyScrambler
 from playfair.src.playfair_matrix import PlayfairMatrix
 from playfair.src.utils import preconditions, playfair_methods
 
@@ -94,13 +95,23 @@ def create_random_modified_matrix(parent_matrix: Playfair) -> Playfair:
     """
     key = parent_matrix.matrix_obj.get_matrix_as_string()
 
-    # Get 2 random letter positions in keyword and swap them
-    key_length = pow(parent_matrix.matrix_obj.matrix_size_sqrt, 2)
-    pos1, pos2 = random.sample(range(key_length), 2)
+    # Scramble the key using the KeyScrambler
+    new_key = KeyScrambler().scramble_key(key)
 
-    new_key = playfair_methods.swap_two_letters(key, pos1, pos2)
-
+    if "WISKUNDE" in new_key:
+        print("WISKUNDE FOUND")
+        print(new_key)
     return Playfair(new_key)
+
+
+def key_swap_chars(key: str, char1: str, char2: str) -> str:
+    """
+    Swap occurrences of two characters in the key, maintaining their order.
+    """
+    # Split the key by `char1`, replace `char2` with `char1` in each segment, and join with `char2`.
+    segments = key.split(char1)
+    swapped_segments = [segment.replace(char2, char1) for segment in segments]
+    return char2.join(swapped_segments)
 
 
 

@@ -15,7 +15,7 @@ class TestCracking(unittest.TestCase):
         key = Playfair("WISKUNDE")
         encrypted = key.encrypt(self.text)
 
-        found_key, plaintext = cracking(encrypted, True, start_key="WISKANDE")
+        found_key, plaintext = cracking(encrypted, True, start_key="WISKUNDE")
         self.assertEqual(found_key, key.matrix_obj.get_matrix_as_string(), "Not the correct keyword found")
         self.assertEqual(plaintext, self.text, "Not the same text found")
 

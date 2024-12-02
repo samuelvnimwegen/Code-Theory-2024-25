@@ -1,7 +1,7 @@
 
 from playfair.src.utils.utils import get_file_content, create_file_name, write_result
 from playfair.src.cracking_algorithms import simulated_annealing
-from playfair.src.scoring_algorithms import score_weighted_average, score_trigrams_count, score_three_letter_patterns, score_frequencies_english
+from playfair.src.scoring_algorithms import score_weighted_average, score_trigrams_count, score_three_letter_patterns, score_frequencies_english, score_quad_gram_count
 from playfair.src.playfair import Playfair
 
 
@@ -11,12 +11,12 @@ def cracking(text_to_crack: str, test=False, start_key: str | None = None) -> (s
     :return: keyword, plaintext
     """
 
-    key, score, language, elapsed_time = simulated_annealing(text_to_crack, score_frequencies_english, 0.95, start_key=start_key)
+    key, score, language, elapsed_time = simulated_annealing(text_to_crack, score_quad_gram_count, 0.95, start_key=start_key)
 
     original_text = key.decrypt(text_to_crack)
     print(original_text)
 
-    # Write result to a file
+    # Write the result to a file
     name_file = "02-OPGAVE-playfair"
     dir_path = "playfair/results/"
     if test:

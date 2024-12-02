@@ -1,18 +1,21 @@
+import json
+import math
 from collections import Counter
 
 from playfair.src.language_info.letter_frequency_table import *
 from playfair.src.language_info.most_common_words import *
 from playfair.src.playfair import Playfair
 from playfair.src.utils.utils import norm_2
+from playfair.src.language_info.load_quad_grams import EN_QUAD_GRAM_DICT, EN_TOTAL_QUADGRAMS
 
 # Scoring algorithms to give a score to a decrypted text
 
 # Idea:
 # Use the frequency table to give a score and determine the language
-        # For each of the 6 languages:
-            # count frequency of letters (without X) and compare with expected frequency
+# For each of the 6 languages:
+# count frequency of letters (without X) and compare with expected frequency
 # With the chosen language, use 500 most common words to give another score
-        # for each common word, give point if present in text
+# for each common word, give point if present in text
 # Take weighted average of both scores, but with increased weight for second score as common words are more powerful
 # return score and used language
 
@@ -70,7 +73,7 @@ def score_common_word_count(text: str) -> dict:
         text_lower = text.lower()
         for word in common_words:
             if word in text_lower:
-                #score += text_lower.count(word)
+                # score += text_lower.count(word)
                 score += 1
 
         score_language_dict[language] = score
@@ -93,7 +96,7 @@ def score_weighted_average(cipher_text: str, cipher_obj: Playfair) -> (str, floa
 
     score_language_dict = dict()
     for language in languages.keys():
-        score_language_dict[language] = (score_frequency_dict[language] + (2*score_common_words_dict[language])) / 3
+        score_language_dict[language] = (score_frequency_dict[language] + (2 * score_common_words_dict[language])) / 3
 
     sorted_dict = sorted(score_language_dict.items(), key=lambda item: item[1], reverse=True)
 
@@ -165,7 +168,7 @@ def score_three_letter_patterns(cipher_text: str, cipher_obj: Playfair, decrypt_
     text_no_x = text_to_score.replace("X", "")
 
     # use sliding window to find all three character substrings and count each
-    three_letter_counts = Counter(text_no_x[i:i+3] for i in range(len(text_no_x) - 2))
+    three_letter_counts = Counter(text_no_x[i:i + 3] for i in range(len(text_no_x) - 2))
 
     pattern_dict = {pattern: count for pattern, count in three_letter_counts.items() if count > 1}
 
@@ -175,7 +178,7 @@ def score_three_letter_patterns(cipher_text: str, cipher_obj: Playfair, decrypt_
     return "no_language", percentage
 
 
-def score_frequencies_english(cipher_text: str, cipher_obj: Playfair, decrypt_text=True) -> (str, float):
+def score_frequencies_english(cipher_text: str, cipher_obj: Playfair = None, decrypt_text=True) -> (str, float):
     """
     After meeting with Mr. Symens -> Plaintext is in English
     Frequencies are best scoring method
@@ -186,6 +189,7 @@ def score_frequencies_english(cipher_text: str, cipher_obj: Playfair, decrypt_te
     """
     text_to_score = cipher_text
     if decrypt_text:
+        assert cipher_obj is not None
         text_to_score = cipher_obj.decrypt(cipher_text)
 
     # Remove all X values (there could be actual X's in the plain text, but low frequency)
@@ -201,20 +205,49 @@ def score_frequencies_english(cipher_text: str, cipher_obj: Playfair, decrypt_te
             continue
         letter_count = text_no_x.count(letter)
         text_frequency = letter_count / (len(text_no_x))
-        expected_frequency = frequencies[letter] / 100   # Divide by 100 to change percentage value to decimal value (0,100) range
+        expected_frequency = frequencies[
+                                 letter] / 100  # Divide by 100 to change percentage value to decimal value (0,100) range
         letter_frequency_diff.append(text_frequency - expected_frequency)
 
     # Take the second norm of the vector
     norm = norm_2(letter_frequency_diff)
 
     # Take difference from 1, so that better scores are higher than worse scores
-    return "EN", 1-norm
+    return "EN", 1 - norm
 
 
+def score_quad_gram_count(cipher_text: str, cipher_obj: Playfair = None, decrypt_text=True) -> (str, float):
+    """
+    Decrypt the text using the cipher object.
+    Find all four letter patterns in the decrypted text and count their appearance (if more than 1).
+    :param cipher_text: Text to decrypt.
+    :param cipher_obj: Cipher object to decrypt the text (contains keyword)
+    :param decrypt_text: boolean value if the text needs to be decrypted first
+    :return: A percentage value of all appearances relative to the length of the text
+    """
+    text_to_score = cipher_text
+    if decrypt_text:
+        assert cipher_obj is not None
+        text_to_score = cipher_obj.decrypt(cipher_text)
 
+    # Remove all X values (there could be actual X's in the plain text, but low frequency)
+    text_no_x = text_to_score.replace("X", "")
 
+    # Use a sliding window to find all four character substrings and count each
+    total_score = 0.0
+    for i in range(len(text_no_x) - 3):
+        quad_gram = text_no_x[i:i + 4]
 
+        # Get the score of the quad gram
+        quad_gram_score = EN_QUAD_GRAM_DICT.get(quad_gram, 0)
 
+        # Get the percentage of the quad gram score
+        if quad_gram_score != 0:
+            percentage = quad_gram_score / EN_TOTAL_QUADGRAMS
+            total_score += math.log(percentage)
+        else:
+            total_score += -10
 
+    return "EN", total_score
 
 

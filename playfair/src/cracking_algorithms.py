@@ -7,9 +7,9 @@ from playfair.src.playfair import Playfair, generate_random_Playfair_matrix, cre
 
 
 def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
-                        attempts: int = 1024,
-                        temperature: float = 0.5, cooling_rate: float = 0.003,
-                        restart_patience=256, start_key: None|str=None) -> (Playfair, float, str):
+                        attempts: int = 10_000_000,
+                        temperature: float = 1000, cooling_rate: float = 0.0001,
+                        restart_patience=100, start_key: None | str=None) -> (Playfair, float, str):
     """
     Simulated annealing algorithm to try and crack
 
@@ -47,34 +47,19 @@ def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
     index = 0
     # the simulated annealing algorithm
     try:
-        #for index in range(attempts):
-        # Changed the algorithm: instead of trying max attempts, go find answer: answer might be good if score is lower than 0.35
-        while best_score < stop_score:
-        #while best_score < 0.99:  # Value to make it run indefinitely
+        while temperature > 0.0001:
             if index % 10000 == 0:
                 # Every 10 000 attempts, check if we have passed the hour mark
                 current_time = datetime.now().timestamp()
                 passed_time_seconds = current_time - start_time
                 hours, remainder = divmod(passed_time_seconds, 3600)
                 minutes, seconds = divmod(remainder, 60)
-                print(f"Current elapsed time at index {index}: {hours}:{minutes}:{seconds} - current score: {best_score*100} %")
-                # if passed_time_seconds > 3600:
-                #     print("The algorithm has passed the one hour mark")
-                #     raise KeyboardInterrupt
+                print(f"Current elapsed time at index {index}: {hours}:{minutes}:{seconds} - current score: {best_score}")
 
             # Create new key by altering the current key
             alternated_key: Playfair = create_random_modified_matrix(current_key)
             # calculate the score
             language, score = scoring_fn(ciphertext, alternated_key)
-
-            # If score is better, replace current key and go again
-            # if current_score > best_score:
-            #     best_score = current_score
-            #     best_key = current_key
-            #     best_key_language = current_language
-            #     time_since_best = 0
-            #
-            #     continue
 
             # If score is worse -> accept with certain probability
             delta_score = score - current_score
@@ -82,6 +67,11 @@ def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
             if abs(delta_ratio) > 100:
                 delta_ratio = math.copysign(1, delta_ratio)
             acceptance_rate = math.exp(delta_ratio)
+
+            # Increase the temperature if it is stuck for too long
+            if temperature < 0.01:
+                temperature = 1000
+
             # generate random value between 0 and 1, if value smaller than probability, accept
             if random() < acceptance_rate:
                 current_score = score
@@ -101,7 +91,6 @@ def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
                         time_since_best = 0
                         current_score = best_score
                         current_key = best_key
-                        current_language = best_key_language
 
             # at the end, decrease temperature with cooling rate
             temperature *= 1 - cooling_rate
