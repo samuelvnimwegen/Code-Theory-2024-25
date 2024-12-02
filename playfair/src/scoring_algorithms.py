@@ -7,6 +7,7 @@ from playfair.src.playfair import Playfair
 from playfair.src.utils.utils import norm_2, remove_letters_x
 from playfair.src.language_info.utils_4gram_EN import binary_search_4grams, total_4grams
 from playfair.src.language_info.letter_freq_table_playfair import ENGLISH_PLAYFAIR
+from playfair.src.language_info.four_grams_most_common import fourgram_en
 
 # Scoring algorithms to give a score to a decrypted text
 
@@ -220,9 +221,6 @@ def score_four_gram_statistics(cipher_text: str, cipher_obj: Playfair, decrypt_t
     :param decrypt_text: boolean value if the text needs to be decrypted first. if False, the cipher text can be interpreted as Plaintext
     :return: language: str, score: float. The language is definitely English (EN)
     """
-    # OPTIMIZATION
-    # TODO: use a "cache memory" (dict) for the most frequent 4-grams, such that no binary search is needed
-
     # To prevent underflow with small float numbers, we'll work with log10
     prob_log = 0
 
@@ -238,9 +236,16 @@ def score_four_gram_statistics(cipher_text: str, cipher_obj: Playfair, decrypt_t
     for index in range(len(text_no_x) - 3):
         four_gram = text_no_x[index:index+4]
 
-        # Get frequency count of the gram and calculate probability in log10
-        count = binary_search_4grams(four_gram)
+        # Check if gram in dictionary
+        if four_gram in fourgram_en.keys():
+            count = fourgram_en[four_gram]
+        else:
+            # Else get frequency count of the txt file with binary search
+            count = binary_search_4grams(four_gram)
+
         probability = count / total_4grams
+
+        # calculate probability in log10
         if probability > 0:
             prob_log += log10(probability)
 

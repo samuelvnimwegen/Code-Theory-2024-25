@@ -18,18 +18,20 @@ def create_dict_4grams():
 
     # Add items
     with open(gram_file, "r") as file:
-        for line in file:
+        for i, line in enumerate(file):
             text_line = line.strip()
             values = text_line.split(" ")
             gram = values[0]
             probability = values[1]
+            if int(probability) < 10000:
+                break
             text += f"\"{gram}\":{probability},\n"
 
     text = text[:-2]
     # Close dict
     text += "\n}"
 
-    with open(f"{dir_path}four_grams.py", 'a') as file:
+    with open(f"{dir_path}four_grams_most_common.py", 'a') as file:
         file.write(text)
 
     file.close()
@@ -101,7 +103,7 @@ def create_playfair_freq_table():
 
 if __name__ == '__main__':
     # create_dict_4grams()
-    create_playfair_freq_table()
+    create_dict_4grams()
 
 
 

@@ -5,7 +5,7 @@ from playfair.src.scoring_algorithms import score_weighted_average, score_trigra
 from playfair.src.playfair import Playfair
 
 
-def cracking(text_to_crack: str, dir_path: str = "playfair/results/", test=False, start_key: str | None = None) -> (str, str):
+def cracking(text_to_crack: str, heuristic, dir_path: str = "playfair/results/", test=False, start_key: str | None = None) -> (str, str):
     """
     Try to crack the text using Playfair
     :return: keyword, plaintext
@@ -18,7 +18,7 @@ def cracking(text_to_crack: str, dir_path: str = "playfair/results/", test=False
     filename, progress_file, index_file = create_file_names(name_file, dir_path)
 
     # Try to crack the ciphertext
-    key, score, language, elapsed_time = simulated_annealing(text_to_crack, score_frequencies_english, start_key=start_key, output_file=progress_file)
+    key, score, language, elapsed_time = simulated_annealing(text_to_crack, heuristic, start_key=start_key, output_file=progress_file)
 
     original_text = key.decrypt(text_to_crack)
     print(original_text)
@@ -37,9 +37,9 @@ if __name__ == '__main__':
     # promising_key = "SHLTUFRWNIKBZGYMQPCXEDOAV"
     # cracking(text_to_crack, output_file, start_key=promising_key)
 
-    n = 15
+    n = 1
     for i in range(n):
-        cracking(text_to_crack, output_file)
+        cracking(text_to_crack, score_four_gram_statistics, output_file)
 
 
 
