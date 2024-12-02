@@ -37,7 +37,7 @@ if __name__ == '__main__':
     # promising_key = "SHLTUFRWNIKBZGYMQPCXEDOAV"
     # cracking(text_to_crack, output_file, start_key=promising_key)
 
-    n = 1
+    n = 15
     for i in range(n):
         cracking(text_to_crack, output_file)
 

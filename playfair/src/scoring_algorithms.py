@@ -220,6 +220,9 @@ def score_four_gram_statistics(cipher_text: str, cipher_obj: Playfair, decrypt_t
     :param decrypt_text: boolean value if the text needs to be decrypted first. if False, the cipher text can be interpreted as Plaintext
     :return: language: str, score: float. The language is definitely English (EN)
     """
+    # OPTIMIZATION
+    # TODO: use a "cache memory" (dict) for the most frequent 4-grams, such that no binary search is needed
+
     # To prevent underflow with small float numbers, we'll work with log10
     prob_log = 0
 
