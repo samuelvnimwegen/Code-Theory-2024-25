@@ -37,6 +37,10 @@ if __name__ == '__main__':
     # promising_key = "SHLTUFRWNIKBZGYMQPCXEDOAV"
     # cracking(text_to_crack, output_file, start_key=promising_key)
 
+    # IF USING 4-GRAMS
+    # TODO: better optimization so each iteration should be way faster (NOW: 1sec)
+    # TODO: Change the scoring result so it could be in a percentage
+
     n = 1
     for i in range(n):
         cracking(text_to_crack, score_four_gram_statistics, output_file)
