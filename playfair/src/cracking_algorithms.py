@@ -9,7 +9,7 @@ from playfair.src.playfair import Playfair, generate_random_Playfair_matrix, cre
 def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
                         attempts: int = 10_000_000,
                         temperature: float = 1000, cooling_rate: float = 0.0001,
-                        restart_patience=100, start_key: None | str=None) -> (Playfair, float, str):
+                        restart_patience=20_000, start_key: None | str=None) -> (Playfair, float, str):
     """
     Simulated annealing algorithm to try and crack
 
@@ -43,6 +43,8 @@ def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
     best_score = current_score
     best_key_language = current_language
     time_since_best = 0
+
+    top_result = (best_key, best_score)
 
     index = 0
     # the simulated annealing algorithm
@@ -87,10 +89,19 @@ def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
 
                 else:
                     time_since_best += 1
+
+                    # If we have not found a better score in a while, restart the whole process
                     if time_since_best > restart_patience:
+                        if best_score > top_result[1]:
+                            top_result = (best_key, best_score, best_key_language)
+                            print(f"New top result: {best_score}")
+
                         time_since_best = 0
-                        current_score = best_score
-                        current_key = best_key
+                        current_key = generate_random_Playfair_matrix()
+                        current_language, current_score = scoring_fn(ciphertext, current_key)
+                        best_score = current_score
+                        best_key = current_key
+                        temperature = 1000
 
             # at the end, decrease temperature with cooling rate
             temperature *= 1 - cooling_rate
@@ -99,11 +110,11 @@ def simulated_annealing(ciphertext: str, scoring_fn, stop_score,
     except KeyboardInterrupt:
         end_time = datetime.now().timestamp()
         elapsed_time = end_time - start_time
-        print(index, elapsed_time, best_key.keyword, f"{best_score*100}%", "Algorithm stopped/interrupted")
+        print(index, elapsed_time, top_result[0].keyword, f"{top_result[1]}", "Algorithm stopped/interrupted")
 
     end_time = datetime.now().timestamp()
     elapsed_time = end_time - start_time
 
-    print(index, elapsed_time, best_key.keyword, f"{best_score * 100}%", "Algorithm finished")
-    return best_key, best_score, best_key_language, elapsed_time
+    print(index, elapsed_time, best_key.keyword, f"{best_score}", "Algorithm finished")
+    return top_result[0], top_result[1], best_key_language, elapsed_time
 
