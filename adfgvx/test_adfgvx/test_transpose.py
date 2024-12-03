@@ -1,7 +1,7 @@
 """
 This file contains the tests for the transpose function in the column_transposition module.
 """
-from cgitb import reset
+
 
 from adfgvx.column_transposition import reverse_transpose
 

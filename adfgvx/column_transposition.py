@@ -35,6 +35,7 @@ def get_original_transposition(text: str, key_length: int) -> tuple[str, list[fl
                 return normal, chi, key
     raise ValueError('No transpositions found for length: ' + str(key_length))
 
+
 def reverse_transpose(text, key: tuple[int, ...]) -> str:
     """
     Transpose the text using the key

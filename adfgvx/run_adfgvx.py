@@ -4,15 +4,21 @@ import itertools
 from util.filestream import load as load_file
 from adfgvx.morse import decode as decode_morse
 from adfgvx.frequency_analysis import frequency_analysis
-from adfgvx.column_transposition import get_original_transposition
+from adfgvx.column_transposition import get_original_transposition, reverse_transpose
+
 
 def solve_adfgvx(path: str, key_length: int) -> str:
     # Load the morse code from the file.
     morse = load_file(path)
     # Decode the morse code.
     data = decode_morse(morse)
+
     # Get all transpositions for the data.
     print("Transposing data...")
+    after_transpose = reverse_transpose(data, (3, 1, 6, 8, 4, 2, 5, 0, 7))
+    print(after_transpose)
+
+
     # Calculate transposition
     try:
         new_data, chi, key = get_original_transposition(data, key_length)
@@ -28,3 +34,4 @@ if __name__ == '__main__':
     path = "codes/03-OPGAVE-adfgvx.txt"
     plain = solve_adfgvx(path, 10)
     # resulting key = (3, 1, 6, 8, 4, 2, 5, 0, 7)
+    pass
