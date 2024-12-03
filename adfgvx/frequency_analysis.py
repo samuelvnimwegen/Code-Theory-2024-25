@@ -21,6 +21,7 @@ def get_frequencies(text: str) -> dict[str, float]:
 
 
 def get_frequencies_ngrams(text: list[str], n: int) -> dict[str, float]:
+    from collections import Counter
     """
     Get the n-grams of the text.
 
@@ -28,14 +29,8 @@ def get_frequencies_ngrams(text: list[str], n: int) -> dict[str, float]:
     :param n: the n
     :return: the n-grams
     """
-    ngrams = dict()
-    for i in range(len(text) - n + 1):
-        ngram = text[i:i + n]
-        ngram = ''.join(ngram)
-        if ngram in ngrams:
-            ngrams[ngram] += 1
-        else:
-            ngrams[ngram] = 1
+    ngrams = [''.join(text[i:i + n]) for i in range(0, len(text) - n + 1)]
+    ngrams = dict(Counter(ngrams))
     total = sum(ngrams.values())
     # Return the percentages, sorted
     return {k: round(100 * v / total, 2) for k, v in sorted(ngrams.items(), key=lambda x: x[1], reverse=True)}
@@ -183,11 +178,55 @@ def ngram_analysis(text: list[str], n: int, language: int):
     # No frequencies found so return
     if len(expected_frequencies) == 0:
         return
-    expected_frequencies = dict(list(expected_frequencies.items())[0:15])
-    print("Expected frequencies of n-grams:" + str(expected_frequencies))
     frequencies = get_frequencies_ngrams(text, n)
-    frequencies = dict(list(frequencies.items())[0:15])
-    print("Frequencies of n-grams:" + str(frequencies))
+    # for k, v in expected_frequencies.items():
+    #     if k[0] == k[2] and k[1] == 'E' and k[3] == 'E':
+    #         ...
+    # for k, v in frequencies.items():
+    #     am_e = 0
+    #     other = set()
+    #     for i in k:
+    #         if i == 'e':
+    #             am_e += 1
+    #         else:
+    #             other.add(i)
+    #     if k[0] == 'e' and k[2] == 'e' and len(other) == 1:
+    #         ...
+    # expected_frequencies = dict(list(expected_frequencies.items())[0:15])
+    # print("Expected frequencies of n-grams:" + str(expected_frequencies))
+    # frequencies = dict(list(frequencies.items())[0:15])
+    # print("Frequencies of n-grams:" + str(frequencies))
+    # Looking at frequencies when assuming e is correct:
+    # L/T/S/N must be o/r/l (looked at all probably 4-grams with eXXe where x is a random letter except for e)
+    # in our text only 3 s  howed up, in expected frequency others are too low probability to consider
+
+    # DEDE: 0.03
+    # LELE: 0.01
+    # SESE: 0.01
+    # RERE: 0.01
+    # TETE: 0.0
+    # NENE: 0.0
+
+    # meme: 0.2
+    # rere: 0.12
+    # dede: 0.04
+    # aeae: 0.04
+
+    # eses: 0.08
+    # emem: 0.04
+    # eded: 0.04
+
+
+
+    # EMEN is very high on expected, we are fairly sure of e's location so emes is closest in our text
+    # EMEN: 0.25%, emes: 0.2% --> s-n
+    # E, M, N
+    # assuming s-n:
+    #   MENT: 0.34 ==> menr: 0.32 --> r-t
+    #   E, M, N, T
+    #   ESDE: 0.15 and EDES: 0.14 ==> eape: 0.16 and epea: 0.12 --> s-a and p-d
+    #   D, E, M, N, S
+    #   ESDE: 0.15 and EDES: 0.14 ==> eoet: 0.04 and eteo: 0.16 --> not likely
 
     # match n:
     #     case 2:

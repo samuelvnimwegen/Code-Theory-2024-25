@@ -22,7 +22,7 @@ def get_original_transposition(text: str, key_length: int) -> tuple[str, list[fl
         keys = list(itertools.permutations(range(i)))
         # Calculate transpositions
         for key in keys:
-            # key = (3, 1, 6, 8, 4, 2, 5, 0, 7)
+            key = (3, 1, 6, 8, 4, 2, 5, 0, 7)
             # Get transposition
             normal = reverse_transpose(text, key)
             # Get frequencies of text
