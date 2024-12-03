@@ -1,6 +1,7 @@
 import os.path
 import itertools
 
+from adfgvx.hill_climb import HillClimbADFGVX
 from util.filestream import load as load_file
 from adfgvx.morse import decode as decode_morse
 from adfgvx.frequency_analysis import frequency_analysis
@@ -14,11 +15,20 @@ def solve_adfgvx(path: str, key_length: int) -> str:
     data = decode_morse(morse)
 
     # Get all transpositions for the data.
-    print("Transposing data...")
     after_transpose = reverse_transpose(data, (3, 1, 6, 8, 4, 2, 5, 0, 7))
-    print(after_transpose)
+    hill_climb = HillClimbADFGVX(after_transpose)
+
+    # Get the result from the hill climb
+    text, score = hill_climb.hill_climb()
+
+    # Write the result and score to a file
+    with open("adfgvx/results/result.txt", "w") as f:
+        f.write(f"Score: {score}\n")
+        f.write(text)
+        f.close()
 
 
+    """
     # Calculate transposition
     try:
         new_data, chi, key = get_original_transposition(data, key_length)
@@ -28,6 +38,7 @@ def solve_adfgvx(path: str, key_length: int) -> str:
     # Frequency analysis
     result = frequency_analysis(data, new_data, chi, key)
     return result
+    """
 
 
 if __name__ == '__main__':
