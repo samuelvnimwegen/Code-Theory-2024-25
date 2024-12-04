@@ -1,8 +1,8 @@
 import os.path
 import itertools
-
+import json
 from adfgvx.hill_climb import HillClimbADFGVX
-from util.filestream import load as load_file
+from util.filestream import load as load_file, count_files_in_directory
 from adfgvx.morse import decode as decode_morse
 from adfgvx.frequency_analysis import frequency_analysis
 from adfgvx.column_transposition import get_original_transposition, reverse_transpose
@@ -19,26 +19,23 @@ def solve_adfgvx(path: str, key_length: int) -> str:
     hill_climb = HillClimbADFGVX(after_transpose)
 
     # Get the result from the hill climb
-    text, score = hill_climb.hill_climb()
+    text, score, key = hill_climb.hill_climb()
 
-    # Write the result and score to a file
-    with open("adfgvx/results/result.txt", "w") as f:
-        f.write(f"Score: {score}\n")
-        f.write(text)
-        f.close()
+    # Save the result to a file
+    result = {
+        "text": text,
+        "score": score,
+        "key": key
+    }
 
+    # Count the number of files in the directory
+    result_nr = count_files_in_directory("adfgvx/results")
 
-    """
-    # Calculate transposition
-    try:
-        new_data, chi, key = get_original_transposition(data, key_length)
-    except ValueError as e:
-        print(e)
-        return ""
-    # Frequency analysis
-    result = frequency_analysis(data, new_data, chi, key)
-    return result
-    """
+    # Write the result to a JSON file
+    with open(f"adfgvx/results/result{result_nr}.json", 'w') as file:
+        json.dump(result, file, indent=4)
+
+    print(f"Result saved to adfgvx/results/result{result_nr}.json")
 
 
 if __name__ == '__main__':
