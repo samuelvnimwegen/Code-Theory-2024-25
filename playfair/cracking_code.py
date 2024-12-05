@@ -41,9 +41,9 @@ if __name__ == '__main__':
     # TODO: better optimization so each iteration should be way faster (NOW: 1sec)
     # TODO: Change the scoring result so it could be in a percentage
 
-    n = 1
+    n = 10
     for i in range(n):
-        cracking(text_to_crack, score_four_gram_statistics, output_file)
+        cracking(text_to_crack, score_frequencies_english, output_file)
 
 
 
