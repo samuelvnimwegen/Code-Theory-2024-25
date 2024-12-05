@@ -4,7 +4,6 @@ This module contains the functions to perform a hill climb.
 import math
 from random import randint
 
-from adfgvx.language_files.load_quad_grams_fr import FR_QUAD_GRAM_DICT, FR_TOTAL_QUAD_GRAMS
 from playfair.src.language_info.load_quad_grams import EN_QUAD_GRAM_DICT, EN_TOTAL_QUADGRAMS
 from adfgvx.language_files.load_french_frequencies import LETTER_FREQUENCIES_FR
 
@@ -17,7 +16,7 @@ class HillClimbADFGVX:
     def __init__(self, pairs_text: str):
         """
         Initialize the HillClimbADFGVX object.
-
+for 1000 iterations
         :param pairs_text: The text to be decrypted in pairs
         """
         # The text to be decrypted in pairs
@@ -110,7 +109,7 @@ class HillClimbADFGVX:
         iterations_since_last_change = 0
 
         try:
-            # Perform the hill climb for 1000 iterations
+            # Perform the hill climb until the user interrupts the program
             while True:
                 # Save the old cipher text
                 old_cipher_text = self.cipher_text
