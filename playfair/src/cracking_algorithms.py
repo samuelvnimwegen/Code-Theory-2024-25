@@ -3,7 +3,7 @@ from random import random
 from datetime import datetime
 import time
 
-from playfair.src.playfair import Playfair, generate_random_Playfair_matrix, create_random_modified_matrix
+from .playfair import Playfair, generate_random_Playfair_matrix, create_random_modified_matrix
 
 
 def simulated_annealing(ciphertext: str, scoring_fn, output_file: str,

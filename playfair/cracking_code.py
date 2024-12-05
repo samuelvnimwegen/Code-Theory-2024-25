@@ -1,8 +1,7 @@
 
-from playfair.src.utils.utils import get_file_content, create_file_names, write_result
-from playfair.src.cracking_algorithms import simulated_annealing
-from playfair.src.scoring_algorithms import score_weighted_average, score_trigrams_count, score_three_letter_patterns, score_frequencies_english, score_quad_gram_count
-from playfair.src.playfair import Playfair
+from src.utils.utils import get_file_content, create_file_names, write_result
+from src.cracking_algorithms import simulated_annealing
+from src.scoring_algorithms import score_weighted_average, score_trigrams_count, score_three_letter_patterns, score_frequencies_english, score_quad_gram_count
 
 
 def cracking(text_to_crack: str, heuristic, dir_path: str = "playfair/results/", test=False, start_key: str | None = None) -> (str, str):
@@ -35,13 +34,7 @@ if __name__ == '__main__':
     text_to_crack = get_file_content('codes/02-OPGAVE-playfair.txt')
     output_file = "playfair/results/big_loop/"
 
-    #cracking(text_to_crack, score_quad_gram_count, output_file)
-
-    # Key found
-    key = "ADVENTURSOFHCKLBYIGMPQWXZ"
-    encrypt_obj = Playfair(key)
-    decrypt = encrypt_obj.decrypt(text_to_crack)
-    print(decrypt)
+    cracking(text_to_crack, score_quad_gram_count, output_file)
 
 
 

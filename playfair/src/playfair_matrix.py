@@ -1,7 +1,7 @@
 import copy
 import math
 import random
-from playfair.src.utils import preconditions
+from .utils import preconditions
 
 
 class PlayfairMatrix:

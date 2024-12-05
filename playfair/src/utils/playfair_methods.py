@@ -1,5 +1,5 @@
 import copy
-from playfair.src.playfair_matrix import PlayfairMatrix
+from ..playfair_matrix import PlayfairMatrix
 
 
 def replace_J_with_I(text: str) -> str:

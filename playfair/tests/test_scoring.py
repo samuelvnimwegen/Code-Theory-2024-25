@@ -1,5 +1,4 @@
 import unittest
-import sys
 
 from playfair.src.scoring_algorithms import score_weighted_average, score_trigrams_count, score_three_letter_patterns, score_frequencies_english, score_quad_gram_count
 from playfair.src.playfair import Playfair

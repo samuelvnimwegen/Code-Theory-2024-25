@@ -3,15 +3,12 @@ import math
 from collections import Counter
 from math import log10
 
-from playfair.src.language_info.letter_frequency_table import *
-from playfair.src.language_info.most_common_words import *
-from playfair.src.playfair import Playfair
-from playfair.src.utils.utils import norm_2
-from playfair.src.language_info.load_quad_grams import EN_QUAD_GRAM_DICT, EN_TOTAL_QUADGRAMS
-from playfair.src.utils.utils import norm_2, remove_letters_x
-from playfair.src.language_info.utils_4gram_EN import binary_search_4grams, total_4grams
-from playfair.src.language_info.letter_freq_table_playfair import ENGLISH_PLAYFAIR
-from playfair.src.language_info.four_grams_most_common import fourgram_en
+from .language_info.letter_frequency_table import *
+from .language_info.most_common_words import *
+from .playfair import Playfair
+from .language_info.load_quad_grams import EN_QUAD_GRAM_DICT, EN_TOTAL_QUADGRAMS
+from .utils.utils import norm_2, remove_letters_x
+from .language_info.letter_freq_table_playfair import ENGLISH_PLAYFAIR
 
 # Scoring algorithms to give a score to a decrypted text
 

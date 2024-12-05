@@ -1,10 +1,10 @@
 import random
 from copy import copy
 
-from playfair.src.key_scrambler import KeyScrambler
-from playfair.src.playfair_matrix import PlayfairMatrix
-from playfair.src.utils import preconditions, playfair_methods
-from playfair.src.utils.utils import remove_letters_x
+from .key_scrambler import KeyScrambler
+from .playfair_matrix import PlayfairMatrix
+from .utils import preconditions, playfair_methods
+from .utils.utils import remove_letters_x
 
 
 class Playfair:
