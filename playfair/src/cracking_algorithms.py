@@ -6,7 +6,7 @@ import time
 from playfair.src.playfair import Playfair, generate_random_Playfair_matrix, create_random_modified_matrix
 
 
-def simulated_annealing(ciphertext: str, scoring_fn, stop_score, output_file: str,
+def simulated_annealing(ciphertext: str, scoring_fn, output_file: str,
                         attempts: int = 10_000_000,
                         temperature: float = 1000, cooling_rate: float = 0.0001,
                         restart_patience=20_000, start_key: None | str=None) -> (Playfair, float, str):
@@ -23,7 +23,6 @@ def simulated_annealing(ciphertext: str, scoring_fn, stop_score, output_file: st
     :param cooling_rate: rate to decrease temperature
     :param restart_patience: the time to restart from the best score known
     :param scoring_fn: the scoring function
-    :param stop_score: stop algorithm after reaching better result than this score (better result = smaller than)
     :param start_key: possible starting key
     :param output_file: the output file to where the progress should be sent
     :return: the best key, with its score and used language

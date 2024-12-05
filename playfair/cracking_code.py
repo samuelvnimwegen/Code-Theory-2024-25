@@ -19,7 +19,8 @@ def cracking(text_to_crack: str, heuristic, dir_path: str = "playfair/results/",
     filename, progress_file, index_file = create_file_names(name_file, dir_path)
 
     # Try to crack the ciphertext
-    key, score, language, elapsed_time = simulated_annealing(text_to_crack, heuristic, start_key=start_key, output_file=progress_file)
+    key, score, language, elapsed_time = simulated_annealing(text_to_crack, heuristic, start_key=start_key,
+                                                             output_file=progress_file)
 
     original_text = key.decrypt(text_to_crack)
     print(original_text)
