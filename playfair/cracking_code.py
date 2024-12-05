@@ -35,7 +35,13 @@ if __name__ == '__main__':
     text_to_crack = get_file_content('codes/02-OPGAVE-playfair.txt')
     output_file = "playfair/results/big_loop/"
 
-    cracking(text_to_crack, score_quad_gram_count, output_file)
+    #cracking(text_to_crack, score_quad_gram_count, output_file)
+
+    # Key found
+    key = "ADVENTURSOFHCKLBYIGMPQWXZ"
+    encrypt_obj = Playfair(key)
+    decrypt = encrypt_obj.decrypt(text_to_crack)
+    print(decrypt)
 
 
 
