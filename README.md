@@ -8,7 +8,7 @@ Dit project bevat de oplossingen van de volgende codes:
 - [x] ADFGVX
 
 De officiële repository is te vinden op [GitHub](https://github.com/samuelvnimwegen/Code-Theory-2024-25).
-
+Het is aangeraden om dit hier te bekijken, aangezien `.md` files beter worden weergegeven op GitHub dan in een text-editor.
 ## Vigenère + Enkele-Kolom-Transpositie
 
 Uitleg, documentatie en code is te vinden in de map [vigenere](vigenere/README.md).
