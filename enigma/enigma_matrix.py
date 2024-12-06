@@ -18,7 +18,7 @@ class EnigmaMatrix:
         Initializes the matrix
         """
         self.edges: list[list[list[tuple[int, int]]]] = [[[] for _ in range(26)] for _ in range(26)]
-        self.connected_rows: set[tuple[int, int]] = set()
+        self.connected_rows: set[tuple[int, int, int]] = set()
         self.plug_matrix_solution: list[list[bool]] = []
         if auto_setup:
             self.add_default_edges()
