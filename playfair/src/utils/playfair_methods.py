@@ -3,6 +3,10 @@ from ..playfair_matrix import PlayfairMatrix
 
 
 def replace_J_with_I(text: str) -> str:
+    """
+    Replace each letter J with a letter I.
+    :return: str: text without letter J
+    """
     replace_string = ""
     for i in range(len(text)):
         if text[i] == 'J':
@@ -14,6 +18,10 @@ def replace_J_with_I(text: str) -> str:
 
 
 def equal_letters(letter_1, letter_2) -> bool:
+    """
+    Check if two letters are equal.
+    :return: bool: True if equal, else False
+    """
     if letter_1 == letter_2:
         return True
 
@@ -49,6 +57,14 @@ def split_text_in_correct_pairs(text: str) -> str:
 
 
 def replace_pairs(letter_1: str, letter_2: str, matrix: PlayfairMatrix, encryption=True) -> str:
+    """
+    Replace each pair with another pair according to the playfair encryption rules.
+    :param letter_1: letter 1 in pair
+    :param letter_2: letter 2 in pair
+    :param matrix: Matrix object with letter locations
+    :param encryption: Use encryption rules if True, else decryption rules (inverse) if False
+    :return: str: a pair of 2 letters: string length is 2
+    """
     dx = +1
     if not encryption:
         dx = -1
