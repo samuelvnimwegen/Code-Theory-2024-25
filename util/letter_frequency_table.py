@@ -1,5 +1,7 @@
 """
 The frequency tables of letters in different languages.
+
+Source for all of them: https://en.wikipedia.org/wiki/Letter_frequency
 """
 
 ENGLISH = {
