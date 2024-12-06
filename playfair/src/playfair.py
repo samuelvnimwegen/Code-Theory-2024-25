@@ -8,6 +8,9 @@ from .utils.utils import remove_letters_x
 
 
 class Playfair:
+    """
+    Playfair Cipher object to encrypt and decrypt using specific key
+    """
     def __init__(self, keyword: str, matrix_size=25):
         self.keyword = keyword.upper()
         self.matrix_obj = PlayfairMatrix(keyword, matrix_size)
@@ -75,6 +78,11 @@ class Playfair:
         assert preconditions.no_spaces_in_text(plaintext)
 
         return plaintext
+
+
+""""""""""""""""""""""""""""""
+"""Playfair Utils Functions"""
+""""""""""""""""""""""""""""""
 
 
 def generate_random_Playfair_matrix() -> Playfair:
