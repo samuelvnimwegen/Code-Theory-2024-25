@@ -89,7 +89,7 @@ class EnigmaSolver:
             result["decrypted_text"] = decrypted_text
             sols.append(result)
 
-        with open("solutions_enigma_with_decryption.txt", "w") as file:
+        with open("solutions/solutions_enigma_with_decryption.txt", "w") as file:
             json.dump(sols, file, indent=4)
-
+        print("The solutions have been saved in solutions/solutions_enigma_with_decryption.txt")
         return sols

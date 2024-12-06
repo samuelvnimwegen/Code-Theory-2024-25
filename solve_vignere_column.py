@@ -26,6 +26,8 @@ def solve_vigenere_plus_column() -> None:
     with open("solutions/01-OPGAVE-vigenereplus.txt", "w", encoding="utf-8") as file:
         file.write(json.dumps(solutions, indent=4))
 
+    print("The solutions have been saved in solutions/01-OPGAVE-vigenereplus.txt")
+
 
 if __name__ == "__main__":
     import time
