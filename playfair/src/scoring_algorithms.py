@@ -205,7 +205,7 @@ def score_frequencies_english(cipher_text: str, cipher_obj: Playfair = None, dec
             continue
         letter_count = text_no_x.count(letter)
         text_frequency = letter_count / (len(text_no_x))
-        expected_frequency = freq   # Divide by 100 to change percentage value to decimal value (0,100) range
+        expected_frequency = freq   # Divide by 100 to change percentage value to decimal value (0,1) range
         letter_frequency_diff.append(text_frequency - expected_frequency)
 
     # Take the second norm of the vector

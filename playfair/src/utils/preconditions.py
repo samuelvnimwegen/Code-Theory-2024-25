@@ -40,6 +40,10 @@ def no_spaces_in_text(text: str) -> bool:
 
 
 def is_perfect_square(n: int) -> bool:
+    """
+    Check if the number is a perfect square
+    :return: True or False
+    """
     if n < 0:
         return False
     sqrt_n = int(math.sqrt(n))
