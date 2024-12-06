@@ -1,7 +1,7 @@
 # Code Theorie 2024-25
 Dit project bevat de oplossingen van de volgende codes:
 - [x] Enigma
-- [ ] Playfair
+- [x] Playfair
 - [x] Vignère + extra kolom-operatie
 - [x] ADFGVX
 
@@ -13,3 +13,6 @@ Uitleg + documentatie is te vinden in de map [adfgvx](adfgvx/README.md).
 
 ## Enigma
 Uitleg + documentatie is te vinden in de map [enigma](enigma/README.md).
+
+## Playfair
+Uitleg + documentatie is te vinden in de map [playfair](playfair/README.md).

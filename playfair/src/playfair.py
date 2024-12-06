@@ -1,12 +1,16 @@
 import random
 from copy import copy
 
-from playfair.src.key_scrambler import KeyScrambler
-from playfair.src.playfair_matrix import PlayfairMatrix
-from playfair.src.utils import preconditions, playfair_methods
+from .key_scrambler import KeyScrambler
+from .playfair_matrix import PlayfairMatrix
+from .utils import preconditions, playfair_methods
+from .utils.utils import remove_letters_x
 
 
 class Playfair:
+    """
+    Playfair Cipher object to encrypt and decrypt using specific key
+    """
     def __init__(self, keyword: str, matrix_size=25):
         self.keyword = keyword.upper()
         self.matrix_obj = PlayfairMatrix(keyword, matrix_size)
@@ -45,9 +49,10 @@ class Playfair:
 
     def decrypt(self, ciphertext: str) -> str:
         """
-        Decrypt the ciphertext using Playfair with the keyword in the class object
+        Decrypt the ciphertext using Playfair with the keyword in the class object.
+        All letters X removed from resulting plaintext
         :param ciphertext: text to decrypt
-        :return: plaintext/original text
+        :return: plaintext/original text with no X's in the text
         """
         assert preconditions.text_only_alphabet(ciphertext)
         assert preconditions.text_no_j(ciphertext)
@@ -64,12 +69,20 @@ class Playfair:
 
         plaintext = replaced_text
 
+        # Remove all X's
+        plaintext = remove_letters_x(plaintext)
+
         # Check some post conditions
         assert preconditions.text_only_alphabet(plaintext)
         assert preconditions.text_no_j(plaintext)
         assert preconditions.no_spaces_in_text(plaintext)
 
         return plaintext
+
+
+""""""""""""""""""""""""""""""
+"""Playfair Utils Functions"""
+""""""""""""""""""""""""""""""
 
 
 def generate_random_Playfair_matrix() -> Playfair:

@@ -1,8 +1,9 @@
 """
 This file contains the EnigmaMatrix class
 """
+import sys
 from copy import deepcopy
-
+from datetime import datetime
 from enigma.enigma_graph import EnigmaGraph
 from enigma.enigma_machine import EnigmaMachine
 
@@ -17,7 +18,7 @@ class EnigmaMatrix:
         Initializes the matrix
         """
         self.edges: list[list[list[tuple[int, int]]]] = [[[] for _ in range(26)] for _ in range(26)]
-        self.connected_rows: set[tuple[int, int]] = set()
+        self.connected_rows: set[tuple[int, int, int]] = set()
         self.plug_matrix_solution: list[list[bool]] = []
         if auto_setup:
             self.add_default_edges()
@@ -66,8 +67,8 @@ class EnigmaMatrix:
                 max_node = key
         return max_node
 
-    def try_rotor_configuration(self, rotor1: str, rotor2: str, rotor3: str, reflector: str,
-                                insta_return: bool = False) -> list[dict[str, str]]:
+    def try_rotor_choice(self, rotor1: str, rotor2: str, rotor3: str, reflector: str,
+                         insta_return: bool = False) -> list[dict[str, str]]:
         """
         Tries to apply the enigma configuration to the matrix
 
@@ -88,9 +89,20 @@ class EnigmaMatrix:
         # Iterate over all the possible configurations of the enigma machines (26^3)
         solutions = []
         conf_range = range(pow(26, 3))
+        last_time = datetime.now()
         for it in conf_range:
-            if it % 1000 == 0:
-                print("Now trying configuration:", it)
+            if it % 25 == 0 and it != 0:
+                current_time = datetime.now()
+                iteration_time: int = (current_time - last_time).total_seconds()
+                intervals_left: int = (pow(26, 3) - it) / 25
+                configuration = f"Now trying configuration: {it} / 17576 for current rotor choice"
+                estimate = (f"Estimated time left for current rotor choice: "
+                            f"{round(intervals_left * iteration_time, 1)} seconds")
+
+                print(f"\r{configuration} | {estimate}", end="")
+
+                last_time = current_time
+
             # Make of copy of the default edges
             edges: list[list[list[tuple[int, int]]]] = deepcopy(self.edges)
 
@@ -190,22 +202,21 @@ class EnigmaMatrix:
         Checks if the matrix is valid
         """
         conf_matrix = []
-        for l2 in range(26):
+        for row in range(26):
             conf_matrix.append([False] * 26)
 
         # Start the BFS from the first node
-        for l2 in range(26):
-            queue = [(self.capital_to_int(self.l1), l2)]
+        row_items: list[int] = [i for i in range(26)]
+        l1_index = self.capital_to_int(self.l1)
+        while len(row_items) > 0:
+            l2_index: int = row_items.pop(0)
+            queue = [(l1_index, l2_index)]
             loop_conf_matrix = deepcopy(conf_matrix)
 
             # Add a counter, from the moment we hit 25, we can start checking for solutions
             addition_counter = 0
             while len(queue) > 0:
                 row, col = queue.pop(0)
-
-                # If there are multiple positives in the row, return False
-                if loop_conf_matrix[row].count(True) > 1:
-                    break
 
                 # If the edge is already in the matrix, continue
                 if loop_conf_matrix[row][col]:
@@ -226,6 +237,11 @@ class EnigmaMatrix:
             # There should be at least 10 edges in the matrix
             if all_rows_one_item and all_cols_one_item and addition_counter > 10:
                 return True, loop_conf_matrix
+            else:
+                # Pop all the true items in the row of l1
+                for i in range(26):
+                    if loop_conf_matrix[l1_index][i] and i in row_items:
+                        row_items.pop(row_items.index(i))
 
         return False, None
 
@@ -240,7 +256,7 @@ class EnigmaMatrix:
         """
         Returns the configuration of the enigma machine
         """
-        # Since we start counting from 1 while making the graph, we nee d to add 1 to the iterations
+        # Since we start counting from 1 while making the graph, we need to add 1 to the iterations
         iterations += 1
 
         # Get the rotor configuration

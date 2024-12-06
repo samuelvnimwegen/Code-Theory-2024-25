@@ -1,10 +1,13 @@
 import copy
 import math
 import random
-from playfair.src.utils import preconditions
+from .utils import preconditions
 
 
 class PlayfairMatrix:
+    """
+    Object to contain the matrix used in Playfair
+    """
     def __init__(self, keyword: str, matrix_size=25):
 
         assert preconditions.no_spaces_in_text(keyword)

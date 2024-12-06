@@ -1,16 +1,18 @@
 import json
 import math
 from collections import Counter
+from math import log10
 
-from playfair.src.language_info.letter_frequency_table import *
-from playfair.src.language_info.most_common_words import *
-from playfair.src.playfair import Playfair
-from playfair.src.utils.utils import norm_2
-from playfair.src.language_info.load_quad_grams import EN_QUAD_GRAM_DICT, EN_TOTAL_QUADGRAMS
+from .language_info.letter_frequency_table import *
+from .language_info.most_common_words import *
+from .playfair import Playfair
+from .language_info.load_quad_grams import EN_QUAD_GRAM_DICT, EN_TOTAL_QUADGRAMS
+from .utils.utils import norm_2, remove_letters_x
+from .language_info.letter_freq_table_playfair import ENGLISH_PLAYFAIR
 
 # Scoring algorithms to give a score to a decrypted text
 
-# Idea:
+# Idea :
 # Use the frequency table to give a score and determine the language
 # For each of the 6 languages:
 # count frequency of letters (without X) and compare with expected frequency
@@ -165,7 +167,7 @@ def score_three_letter_patterns(cipher_text: str, cipher_obj: Playfair, decrypt_
         text_to_score = cipher_obj.decrypt(cipher_text)
 
     # Remove all X values (there could be actual X's in the plain text, but low frequency)
-    text_no_x = text_to_score.replace("X", "")
+    text_no_x = remove_letters_x(text_to_score)
 
     # use sliding window to find all three character substrings and count each
     three_letter_counts = Counter(text_no_x[i:i + 3] for i in range(len(text_no_x) - 2))
@@ -185,7 +187,7 @@ def score_frequencies_english(cipher_text: str, cipher_obj: Playfair = None, dec
     :param cipher_text: Text to decrypt
     :param cipher_obj: Cipher object to decrypt the text (contains keyword)
     :param decrypt_text: boolean value if the text needs to be decrypted first
-    :return: negative of score: better score is higher than worse scores
+    :return: 1 - score: better score is higher than worse scores
     """
     text_to_score = cipher_text
     if decrypt_text:
@@ -193,20 +195,17 @@ def score_frequencies_english(cipher_text: str, cipher_obj: Playfair = None, dec
         text_to_score = cipher_obj.decrypt(cipher_text)
 
     # Remove all X values (there could be actual X's in the plain text, but low frequency)
-    text_no_x = text_to_score.upper().replace("X", "")
-
-    language = "EN"
-    frequencies = languages[language][0]
+    # The X frequency is removed from the letter frequencies
+    text_no_x = remove_letters_x(text_to_score)
 
     # Take for each letter the difference between the text frequency and the expected frequency
     letter_frequency_diff = []
-    for letter in frequencies.keys():
+    for letter, freq in ENGLISH_PLAYFAIR.items():
         if letter == 'X' or letter == 'J':
             continue
         letter_count = text_no_x.count(letter)
         text_frequency = letter_count / (len(text_no_x))
-        expected_frequency = frequencies[
-                                 letter] / 100  # Divide by 100 to change percentage value to decimal value (0,100) range
+        expected_frequency = freq   # Divide by 100 to change percentage value to decimal value (0,1) range
         letter_frequency_diff.append(text_frequency - expected_frequency)
 
     # Take the second norm of the vector
@@ -231,7 +230,7 @@ def score_quad_gram_count(cipher_text: str, cipher_obj: Playfair = None, decrypt
         text_to_score = cipher_obj.decrypt(cipher_text)
 
     # Remove all X values (there could be actual X's in the plain text, but low frequency)
-    text_no_x = text_to_score.replace("X", "")
+    text_no_x = remove_letters_x(text_to_score)
 
     # Use a sliding window to find all four character substrings and count each
     total_score = 0.0
