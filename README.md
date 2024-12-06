@@ -5,6 +5,8 @@ Dit project bevat de oplossingen van de volgende codes:
 - [x] Vignère + extra kolom-operatie
 - [x] ADFGVX
 
+De officiële repository is te vinden op [GitHub](https://github.com/samuelvnimwegen/Code-Theory-2024-25).
+
 ## Vigenère + Enkele-Kolom-Transpositie
 Uitleg + documentatie is te vinden in de map [vigenere](vigenere/README.md).
 
