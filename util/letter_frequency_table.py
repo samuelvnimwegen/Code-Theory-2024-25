@@ -303,3 +303,8 @@ POLISH = {
     "V": 0.04,
     "X": 0.02,
 }
+
+tables = [ENGLISH, FRENCH, GERMAN, DUTCH, SPANISH, ITALIAN]
+tables_names = ["English", "French", "German", "Dutch", "Spanish", "Italian"]
+for i in range(len(tables)):
+    tables[i] = dict(sorted(tables[i].items(), key=lambda item: item[1], reverse=True))

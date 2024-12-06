@@ -8,6 +8,9 @@ Dit project bevat de oplossingen van de volgende codes:
 ## Vigenère + Enkele-Kolom-Transpositie
 Uitleg + documentatie is te vinden in de map [vigenere](vigenere/README.md).
 
+## ADFGVX
+Uitleg + documentatie is te vinden in de map [adfgvx](adfgvx/README.md).
+
 ## Enigma
 Uitleg + documentatie is te vinden in de map [enigma](enigma/README.md).
 
@@ -21,6 +24,5 @@ python3 -m pytest
 ```
 Dit runt alle testen na elkaar. 
 Bijna elke functie heeft een test, bekijk deze zeker eens als u geïnteresseerd bent in de werking van de code.
-
 ## Oplossingen
 Deze zijn te vinden in de map [solutions](solutions).

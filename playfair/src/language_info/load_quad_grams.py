@@ -1,3 +1,8 @@
+"""
+This module loads the quadgram dictionary for the English language.
+"""
+
+
 def load_quad_grams(file_path="playfair/src/language_info/4grams.txt") -> dict[str, int]:
     """
     Load a dictionary file into a dict for quick lookups.
