@@ -2,7 +2,9 @@ name: Run Pytest on Multiple Python Versions and OS
 
 on:
   pull_request:
-
+  push:
+    branches:
+      - main
 jobs:
   test:
     strategy:
