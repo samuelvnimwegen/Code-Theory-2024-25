@@ -32,7 +32,7 @@ def write_result(file_name: str, result_key: str, result_plaintext: str, elapsed
         text += "\n"
         hours, remainder = divmod(elapsed_time, 3600)
         minutes, seconds = divmod(remainder, 60)
-        text += f"Duration: {hours}:{minutes}:{seconds} - score: {best_score * 100} %"
+        text += f"Duration: {hours}:{minutes}:{seconds} - score: {best_score}"
 
     with open(file_name, 'a') as file:
         file.write(text)

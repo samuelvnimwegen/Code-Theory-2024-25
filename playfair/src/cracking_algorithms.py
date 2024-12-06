@@ -143,8 +143,7 @@ def print_progress(filename: str, index: int, start_time: float, key: Playfair, 
     print_str += f"{plaintext[:40]}...\t"
 
     # Score
-    percentage = 100 * score
-    print_str += f"{percentage}%"
+    print_str += f"{score}"
 
     myPrint(print_str, filename)
 
@@ -153,7 +152,7 @@ def print_start(filename: str):
     """
     Print the start line of file
     """
-    myPrint("Index\t\t|Time Needed\t\t\t\t|Key\t\t\t\t\t\t|Plaintext\t\t\t\t\t\t\t\t|Score", filename)
+    myPrint("Index\t\t|Time Needed\t\t\t|Key\t\t\t\t|Plaintext\t\t\t\t\t|Score", filename)
 
 
 def myPrint(text: str, filename: str):
